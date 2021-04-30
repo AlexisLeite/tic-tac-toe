@@ -8,6 +8,8 @@ class AutoReflectChangesComponent extends Component {
     this.updateKey = 0;
     this.debugReflect = false;
 
+    this.state = {}
+
     asDebugable(this);
   }
 
@@ -52,7 +54,7 @@ class AutoReflectChangesComponent extends Component {
   stateDidUpdate(key, value) {}
 
   componentDidUpdate(prevProps, prevState) {
-    let prevStateType = typeof prevState.___updateKey;
+    let prevStateType = prevState && typeof prevState.___updateKey;
     if(this.state.___updateKey === undefined) {
       this.updateState(this.state);
     }
@@ -64,7 +66,8 @@ class AutoReflectChangesComponent extends Component {
       this.debug(1,this.state.___updated);
       for (let key of this.state.___updated) {
         this.debug(1,`New value of '${key}':`, this.state[key]);
-        this.stateDidUpdate(key, this.state[key]);
+        let prevStateProp = key in prevState ? prevState[key] : undefined
+        this.stateDidUpdate(key, this.state[key], prevStateProp);
       }
     }
   }

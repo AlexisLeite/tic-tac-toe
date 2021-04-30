@@ -17,7 +17,8 @@ export class Modal extends Component {
     textAlign: false,
 
     // Properties
-    id: ''
+    id: '',
+    className: ''
   };
 
   constructor(props) {
@@ -48,7 +49,7 @@ export class Modal extends Component {
   render() {
     return (
       this.state.show && (
-        <div onClick={this.close} className="modal-background">
+        <div onClick={this.close} className={`modal-background ${this.props.className}`}>
           <div id={this.props.id || '' } style={{textAlign: this.props.textAlign}} className="modal">
             {this.props.title && (
               <div className="modal-header">{this.props.title}</div>

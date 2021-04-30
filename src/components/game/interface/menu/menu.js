@@ -49,12 +49,14 @@ export class Menu extends AutoReflectChangesComponent {
   render() {
     return (
       <Modal id="GameMenu" canClose={false}>
+        <form onSubmit={e=> {
+          e.preventDefault();
+          this.startGame();
+        }}>
         <button
+          type="submit"
           className="menu-button main"
           id="Gooooo"
-          onClick={() => {
-            this.startGame();
-          }}
         >
           {translate("Play")}
         </button>
@@ -79,6 +81,7 @@ export class Menu extends AutoReflectChangesComponent {
               : undefined
           }
         />
+        </form>
       </Modal>
     );
   }

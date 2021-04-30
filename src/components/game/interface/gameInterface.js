@@ -4,6 +4,8 @@ import Loader from "components/layout/loader";
 import Menu from "./menu/menu";
 import { translate } from "./../../../resources/common";
 import { AutoReflectChangesComponent } from 'resources/common';
+import ResultsScreen from "./menu/resultsScreen";
+import { UsersService } from "resources/usersService";
 
 class Player {
   onSet() {}
@@ -30,7 +32,6 @@ class HumanPlayer extends Player {
   }
 
   getTurn() {
-    console.log(`${this.profile.name}: Oh, it's my turn already!`);
   }
 
   onSet() {}
@@ -57,9 +58,19 @@ export class GameInterface extends AutoReflectChangesComponent {
     this.gameHandler = {
       start: () => {},
     };
-
-    //this.debugReflect = true;
   }  
+
+  componentDidMount() {
+    UsersService.leaderboard().then(res => {this.updateState({
+      leaderboard: res
+    })})
+  }
+
+  handleDraw = () => {
+    this.updateState({
+      playing: false,
+    })
+  }
 
   handleGameStarted = () => {
     this.updateState({
@@ -108,25 +119,25 @@ export class GameInterface extends AutoReflectChangesComponent {
     this.initInterface();
   };
 
+  stateDidUpdate(key, prop, prev) {
+  }
+
   render() {
     return (
       <>
         <Loader show={!this.state.loadFinished} />
         {this.state.showWinner && !this.state.playing && (
-          <div>
-            <h1 className="winner-announce">
-              {translate(`Congratulations, ${this.state.winner.profile.name}.`)}
-            </h1>
-            {this.state.showPlayAgain && (
-              <button
-                onClick={() => {
-                  this.gameHandler.start();
-                }}
-              >
-                {translate("Play again")}
-              </button>
-            )}
-          </div>
+          <ResultsScreen 
+            winner={this.state.winner.profile}
+            playAgain={() => {
+              this.gameHandler.start();
+            }}
+            changePlayers={()=> {
+              this.updateState({
+                showWinner:false
+              })
+            }}
+          />
         )}
         {this.state.loadFinished &&
           !this.state.playing &&
@@ -145,7 +156,6 @@ export class GameInterface extends AutoReflectChangesComponent {
 
                 players[1].icon = "O";
                 this.updateState({ players });
-                console.log('Start game order given', players);
                 this.gameHandler.start(players);
               }}
               players={this.state.players}
@@ -156,8 +166,8 @@ export class GameInterface extends AutoReflectChangesComponent {
             // Flow control
             handler={this.setHandler}
             onWinner={this.handleWinner}
-            onGameEnded={this.handleGameEnded}
             onGameStarted={this.handleGameStarted}
+            onDraw={this.handleDraw}
           />
         </main>
       </>

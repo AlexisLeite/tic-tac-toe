@@ -26,4 +26,5 @@ You can set the canClose property to false in order to prevent the user from ckl
 ## Available properties
 
 - **id** set the modal id
+- **className** sets an aditional class name to the modal
 - **textAlign** set the text alignment

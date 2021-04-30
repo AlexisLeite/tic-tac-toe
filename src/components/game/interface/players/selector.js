@@ -31,7 +31,8 @@ class Selector extends Component {
     return (
       <div className={`selector ${this.props.className}`}>
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             let value = this.state.value;
             value = value === 0 ? this.props.options.length - 1 : value - 1;
             this.setState({
@@ -43,7 +44,8 @@ class Selector extends Component {
         </button>
         {this.props.options[this.state.value]}
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             let value = this.state.value;
             value = value === this.props.options.length - 1 ? 0 : value + 1;
             this.setState({

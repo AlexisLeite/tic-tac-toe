@@ -39,7 +39,13 @@ function PlayerHandler(objThis) {
     let turn = Number(!Boolean(objThis.state.turn));
 
     if (!objThis.checkGame(squares)) {
-      objThis.shoutTurnChanged(turn);
+      if (
+        squares.filter((el) => {
+          return el.mark === "";
+        }).length === 0
+      )
+        objThis.shoutDraw();
+      else objThis.shoutTurnChanged(turn);
     }
 
     objThis.updateState({
@@ -153,13 +159,17 @@ export class Game extends AutoReflectChangesComponent {
     this.props.handler(gameHandler);
   }
 
+  handleClick = (square) => {
+    this.players[this.state.turn].handleClick(square);
+  };
+
   stateDidUpdate(key, value) {
     if (key === "playing") if (this.state.playing) this.props.onGameStarted();
   }
 
-  handleClick = (square) => {
-    this.players[this.state.turn].handleClick(square);
-  };
+  shoutDraw() {
+    this.props.onDraw();
+  }
 
   shoutTurnChanged = (turn) => {
     this.props.onTurnChanged(turn);

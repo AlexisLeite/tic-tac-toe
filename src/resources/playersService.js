@@ -11,13 +11,13 @@ export class PlayersServiceClass {
   }
 
   async loadAvatarImages() {
-    return await (await fetch("http://192.168.1.4/avatars")).json();
+    return await (await fetch("http://localhost/avatars")).json();
   }
 
   login(name, password) {
     const users = [
-      { name: "Alexis", password: "Alexis", image: "http://192.168.1.4/images/avatar_29.png" },
-      { name: "Alito", password: "Alito", image: "http://192.168.1.4/images/avatar_09.png" },
+      { name: "Alexis", password: "Alexis", image: "http://localhost/images/avatar_29.png" },
+      { name: "Alito", password: "Alito", image: "http://localhost/images/avatar_09.png" },
     ];
 
     for (const credentials of users) {
