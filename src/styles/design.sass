@@ -1,0 +1,202 @@
+@import "./themes/dark"
+@import "./themes/light"
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Orelega+One&display=swap')
+
+body
+  font-family: Montserrat, sans-serif
+  font-size: 4vw
+  
+button
+  background: none
+  border: none
+  font-size: 4vw
+
+  &.button-round
+    border-radius: 40% !important
+
+input
+  font-size: 4vw
+
+aside
+  .hider
+    text-align: center
+
+#Board
+  .board-row
+    .board-square
+      font-family: 'Krona One'
+
+#GameMenu
+  .menu-button
+    text-align: center
+    width: 50%
+    margin: 3px 0
+    font: bold  Montserrat
+    padding: 5px
+
+    &:first-of-type
+      margin-top: 15px
+
+    &:hover
+      color: white !important
+
+    &.main
+      /** font-size: 1.2em **/
+
+  #Gooooo
+    width: 100%
+    box-sizing: border-box
+    margin: 0
+
+#LoginForm
+  text-align: center
+  background: darkviolet
+  color: white
+
+  form
+    text-align: center
+
+    input
+      margin-top: 10px
+
+      &:first-of-type
+        margin-top: 0
+
+    button
+
+      &.menu-button
+        margin: 10px auto
+
+.avatar
+  width: 100px
+  height: 100px
+
+.error
+  background: crimson
+  margin: 5px
+  padding: 10px
+  color: white
+  text-align: center
+
+.icon 
+  cursor: pointer
+
+.modal-background
+  background: rgba(0,0,0,0.3)
+
+  .modal
+
+    .modal-header
+      border:
+        top-left-radius: 5px
+        top-right-radius: 5px
+      padding: 3px
+      text-align: center
+      
+      text-shadow: 1px 1px 2px rgb(250 250 250)
+      border: 1px solid #555
+      background: #999
+
+      &+.modal-body
+        border:
+          bottom-left-radius: 5px
+          bottom-right-radius: 5px
+          top: none
+
+    .modal-body
+      background: #ccc
+      padding: 3px
+      border: 1px solid #555
+
+.player-profile
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 70% !important
+  margin: 20px
+  background: blueviolet
+  padding: 20px
+  border-radius: 20px
+  color: white
+
+  div
+    text-align: center
+
+    button
+      display: inline-block !important
+      margin: 0 !important
+
+    h4
+      flex-grow: 1
+      margin: 10px
+
+.profiler
+  margin: 5px
+  border: 2px solid black 
+  padding: 10px 
+  height: 36vh  
+  width: 80vw
+  background: cornsilk  
+  border-radius: 6px  
+  overflow: auto  
+  display: flex
+  flex-direction: column
+  align-items: center
+
+  div
+    width: 100%
+
+  h3
+    text-align: center
+    /** font-size: 1.5em **/
+    margin-top: 0
+    font-weight: bold
+    /* FONT-WEIGHT: 100 */
+    padding-bottom: 5px
+    margin-bottom: 0.4em
+
+  input
+    width: 80%
+    text-align: center
+
+  .avatar
+    border: 5px solid black
+    margin-bottom: 5px
+
+.select-button
+  max-width: 12vw
+  margin: 3px
+
+  select 
+    /** font-size: 1.5em **/
+    margin: 5px 0 0 0
+
+.selector 
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin: 5px 0
+  background: rgba(0,0,0,0.03)
+  padding: 5px 0
+
+  button
+    padding: 4px
+    border-radius: 12px
+    margin: 0 10px
+
+.status-bar
+  background: #eee
+  font-size: 10pt
+
+  $border-status-box: 1px solid #888
+
+  .status-box
+    border: $border-status-box
+    color: #151515
+    padding-right: 3px
+    margin-right: 3px
+
+    strong
+      padding: 2px
+      display: inline-block

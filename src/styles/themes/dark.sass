@@ -1,0 +1,84 @@
+$dt-main-color: #ccc
+$dt-main-background: #333
+$dt-main-hover: #ffffff
+$dt-primary-highlight: #dd7575
+
+$dt-secondary-background: #999
+$dt-secondary-color: #222
+$dt-secondary-shadow: 1px 1px 4px rgba(50,50,50,0.8)
+$dt-secondary-highlight: #fffeb9
+
+$dt-menu-button-color: #3c190c
+$dt-menu-button-background: #c9f310
+$dt-menu-button-border: 2px solid white
+
+$dt-dialogs-border-color: #555
+  
+body.dark
+  color: $dt-main-color
+  background: $dt-main-background
+
+  aside
+    .hider
+
+      button
+        background: $dt-secondary-background
+        color: $dt-secondary-color
+
+  .button-selector-option
+    &:focus, &:hover
+      color: $dt-main-hover
+      text-decoration: underline
+      text-decoration-style: dotted
+
+  .icon 
+    color: #b9b9b9
+
+  .modal-background
+    background: rgba(0,0,0,0.85)
+
+    .modal
+      
+      .modal-header
+        text-shadow: $dt-secondary-shadow
+        border: 1px solid $dt-dialogs-border-color
+        background: $dt-secondary-background
+        color: $dt-secondary-color
+
+      .modal-body
+        background: $dt-main-background
+        color: $dt-main-color
+        border: 
+          left: 1px solid $dt-dialogs-border-color
+          right: 1px solid $dt-dialogs-border-color
+          bottom: 1px solid $dt-dialogs-border-color
+
+  #Board
+    .board-row
+      .board-square
+        background: $dt-secondary-background
+        color: $dt-secondary-color
+        
+        &.highlighted
+          background: $dt-primary-highlight
+
+        &.winner
+          background: $dt-secondary-highlight
+
+#GameMenu
+
+  .menu-button
+    background: $dt-secondary-background
+    color: $dt-secondary-color
+    border-radius: 0.5em
+
+    &.main
+      border: $dt-menu-button-border
+      background: $dt-menu-button-background
+      color: $dt-menu-button-color
+
+.selector 
+
+  button
+    background: $dt-main-background
+    color: $dt-main-color

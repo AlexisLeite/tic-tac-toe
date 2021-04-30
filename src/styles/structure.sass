@@ -1,0 +1,118 @@
+$breakpoints: (xs: 0, sm: 576px, md: 768px, lg: 992px, xl: 1200px, xxl: 1400px)
+
+@mixin breakpoint($breakpoint) 
+  @if map-has-key($breakpoints, $breakpoint) 
+    @media (min-width: map-get($breakpoints, $breakpoint)) 
+      @content
+  @else 
+    @warn "Unfortunately, no value could be retrieved from `#$breakpoint`. Available breakpoints are: #map-keys($breakpoints)."
+
+@include breakpoint("xs")
+  body
+    background: #eaeaea
+
+  aside
+    text-align: center
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+
+    .hide
+      display: none
+
+@include breakpoint("sm")
+  body
+    background: #dfdfdf
+
+@include breakpoint("md")
+  body
+    background: #e5e5e5
+
+  aside
+    .hider
+      display: none
+
+    .hide
+      display: block
+
+@include breakpoint("lg")
+  body
+    background: #eaeaea
+
+@include breakpoint("xl")
+  body
+    background: #f2f2f2
+
+aside 
+
+  .hider
+    cursor: pointer
+    
+    button
+      border-radius: 4px
+
+body
+  margin: 0
+  overflow: hidden
+
+button
+  cursor: pointer
+
+.button-selector
+  display: inline-block
+
+  .button-selector-option
+    text-align: center
+    cursor: pointer
+    padding: 3px
+    display: block
+    width: 100%
+
+main
+  height: 100vh
+  display: flex
+  align-items: center
+  justify-content: center  
+
+.modal-background
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  display: flex
+  align-items: center
+  justify-content: center
+
+  .modal
+
+    .modal-body
+      overflow: auto
+      min-width: 300px
+      max-width: 95vw
+      min-height: 150px
+      max-height: 90vh
+
+.status-bar
+  position: fixed
+  bottom: 0
+  top: auto
+  height: auto    
+  display: flex
+  align-items: center
+  justify-content: center
+
+#Board
+  .board-row
+    display: flex
+
+    .board-square
+      font-size: min(7vw, 7vh)
+      width: min(20vw, 20vh)
+      height: min(20vw, 20vh)
+      margin: 0 2vw 2vw 0
+
+#GameMenu
+  .menu-button
+    display: block

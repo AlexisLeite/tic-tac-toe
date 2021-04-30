@@ -1,0 +1,81 @@
+$lt-main-color: #333
+$lt-main-background: #ccc
+$lt-main-hover: #000
+$lt-primary-highlight: #bde726
+
+$lt-secondary-background: #222
+$lt-secondary-color: #999
+$lt-secondary-shadow: 1px 1px 4px rgba(50,50,50,0.8)
+$lt-secondary-highlight: #009e22
+
+$lt-menu-button-border: 2px solid #1a7165
+$lt-menu-button-background: #221d79
+$lt-menu-button-color: #ccc
+
+$lt-dialogs-border-color: #555
+  
+body.light
+  color: $lt-main-color
+  background: $lt-main-background
+
+  aside
+    .hider
+
+      button
+        background: $lt-secondary-background
+        color: $lt-secondary-color
+
+  .button-selector-option
+    &:focus, &:hover
+      color: $lt-main-hover
+      text-decoration: underline
+      text-decoration-style: dotted
+
+  .icon 
+    color: $lt-main-color
+
+  .modal-background
+    background: rgba(0,0,0,0.3)
+
+    .modal
+      
+      .modal-header
+        text-shadow: $lt-secondary-shadow
+        border: 1px solid $lt-dialogs-border-color
+        background: $lt-secondary-background
+        color: $lt-secondary-color
+
+      .modal-body
+        background: $lt-main-background
+        color: $lt-main-color
+        border: 
+          left: 1px solid $lt-dialogs-border-color
+          right: 1px solid $lt-dialogs-border-color
+          bottom: 1px solid $lt-dialogs-border-color
+
+  #Board
+    .board-row
+      .board-square
+        background: $lt-secondary-background
+        color: $lt-secondary-color
+        
+        &.highlighted
+          background: $lt-primary-highlight
+
+        &.winner
+          background: $lt-secondary-highlight
+
+
+  #GameMenu
+
+    .menu-button
+      background: $lt-secondary-background
+      color: $lt-secondary-color
+      border-radius: 0.5em
+
+      &.main
+        border: $lt-menu-button-border
+        background: $lt-menu-button-background
+        color: $lt-menu-button-color
+
+

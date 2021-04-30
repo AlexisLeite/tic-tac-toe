@@ -1,13 +1,435 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Krona+One&family=Orelega+One&display=swap");
+@media (min-width: 0) {
+  body {
+    background: #eaeaea;
+  }
+
+  aside {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  aside .hide {
+    display: none;
+  }
+}
+@media (min-width: 576px) {
+  body {
+    background: #dfdfdf;
+  }
+}
+@media (min-width: 768px) {
+  body {
+    background: #e5e5e5;
+  }
+
+  aside .hider {
+    display: none;
+  }
+  aside .hide {
+    display: block;
+  }
+}
+@media (min-width: 992px) {
+  body {
+    background: #eaeaea;
+  }
+}
+@media (min-width: 1200px) {
+  body {
+    background: #f2f2f2;
+  }
+}
+aside .hider {
+  cursor: pointer;
+}
+aside .hider button {
+  border-radius: 4px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  margin: 0;
+  overflow: hidden;
 }
+
+button {
+  cursor: pointer;
+}
+
+.button-selector {
+  display: inline-block;
+}
+.button-selector .button-selector-option {
+  text-align: center;
+  cursor: pointer;
+  padding: 3px;
+  display: block;
+  width: 100%;
+}
+
+main {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-background .modal .modal-body {
+  overflow: auto;
+  min-width: 300px;
+  max-width: 95vw;
+  min-height: 150px;
+  max-height: 90vh;
+}
+
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  top: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#Board .board-row {
+  display: flex;
+}
+#Board .board-row .board-square {
+  font-size: min(7vw, 7vh);
+  width: min(20vw, 20vh);
+  height: min(20vw, 20vh);
+  margin: 0 2vw 2vw 0;
+}
+
+#GameMenu .menu-button {
+  display: block;
+}
+
+body.dark {
+  color: #ccc;
+  background: #333;
+}
+body.dark aside .hider button {
+  background: #999;
+  color: #222;
+}
+body.dark .button-selector-option:focus, body.dark .button-selector-option:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+body.dark .icon {
+  color: #b9b9b9;
+}
+body.dark .modal-background {
+  background: rgba(0, 0, 0, 0.85);
+}
+body.dark .modal-background .modal .modal-header {
+  text-shadow: 1px 1px 4px rgba(50, 50, 50, 0.8);
+  border: 1px solid #555;
+  background: #999;
+  color: #222;
+}
+body.dark .modal-background .modal .modal-body {
+  background: #333;
+  color: #ccc;
+  border-left: 1px solid #555;
+  border-right: 1px solid #555;
+  border-bottom: 1px solid #555;
+}
+body.dark #Board .board-row .board-square {
+  background: #999;
+  color: #222;
+}
+body.dark #Board .board-row .board-square.highlighted {
+  background: #dd7575;
+}
+body.dark #Board .board-row .board-square.winner {
+  background: #fffeb9;
+}
+
+#GameMenu .menu-button {
+  background: #999;
+  color: #222;
+  border-radius: 0.5em;
+}
+#GameMenu .menu-button.main {
+  border: 2px solid white;
+  background: #c9f310;
+  color: #3c190c;
+}
+
+.selector button {
+  background: #333;
+  color: #ccc;
+}
+
+body.light {
+  color: #333;
+  background: #ccc;
+}
+body.light aside .hider button {
+  background: #222;
+  color: #999;
+}
+body.light .button-selector-option:focus, body.light .button-selector-option:hover {
+  color: #000;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+body.light .icon {
+  color: #333;
+}
+body.light .modal-background {
+  background: rgba(0, 0, 0, 0.3);
+}
+body.light .modal-background .modal .modal-header {
+  text-shadow: 1px 1px 4px rgba(50, 50, 50, 0.8);
+  border: 1px solid #555;
+  background: #222;
+  color: #999;
+}
+body.light .modal-background .modal .modal-body {
+  background: #ccc;
+  color: #333;
+  border-left: 1px solid #555;
+  border-right: 1px solid #555;
+  border-bottom: 1px solid #555;
+}
+body.light #Board .board-row .board-square {
+  background: #222;
+  color: #999;
+}
+body.light #Board .board-row .board-square.highlighted {
+  background: #bde726;
+}
+body.light #Board .board-row .board-square.winner {
+  background: #009e22;
+}
+body.light #GameMenu .menu-button {
+  background: #222;
+  color: #999;
+  border-radius: 0.5em;
+}
+body.light #GameMenu .menu-button.main {
+  border: 2px solid #1a7165;
+  background: #221d79;
+  color: #ccc;
+}
+
+body {
+  font-family: Montserrat, sans-serif;
+  font-size: 4vw;
+}
+
+button {
+  background: none;
+  border: none;
+  font-size: 4vw;
+}
+button.button-round {
+  border-radius: 40% !important;
+}
+
+input {
+  font-size: 4vw;
+}
+
+aside .hider {
+  text-align: center;
+}
+
+#Board .board-row .board-square {
+  font-family: "Krona One";
+}
+
+#GameMenu .menu-button {
+  text-align: center;
+  width: 50%;
+  margin: 3px 0;
+  font: bold Montserrat;
+  padding: 5px;
+}
+#GameMenu .menu-button:first-of-type {
+  margin-top: 15px;
+}
+#GameMenu .menu-button:hover {
+  color: white !important;
+}
+#GameMenu .menu-button.main {
+  /** font-size: 1.2em **/
+}
+#GameMenu #Gooooo {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#LoginForm {
+  text-align: center;
+  background: darkviolet;
+  color: white;
+}
+#LoginForm form {
+  text-align: center;
+}
+#LoginForm form input {
+  margin-top: 10px;
+}
+#LoginForm form input:first-of-type {
+  margin-top: 0;
+}
+#LoginForm form button.menu-button {
+  margin: 10px auto;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+}
+
+.error {
+  background: crimson;
+  margin: 5px;
+  padding: 10px;
+  color: white;
+  text-align: center;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.modal-background {
+  background: rgba(0, 0, 0, 0.3);
+}
+.modal-background .modal .modal-header {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 3px;
+  text-align: center;
+  text-shadow: 1px 1px 2px #fafafa;
+  border: 1px solid #555;
+  background: #999;
+}
+.modal-background .modal .modal-header + .modal-body {
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: none;
+}
+.modal-background .modal .modal-body {
+  background: #ccc;
+  padding: 3px;
+  border: 1px solid #555;
+}
+
+.player-profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70% !important;
+  margin: 20px;
+  background: blueviolet;
+  padding: 20px;
+  border-radius: 20px;
+  color: white;
+}
+.player-profile div {
+  text-align: center;
+}
+.player-profile div button {
+  display: inline-block !important;
+  margin: 0 !important;
+}
+.player-profile div h4 {
+  flex-grow: 1;
+  margin: 10px;
+}
+
+.profiler {
+  margin: 5px;
+  border: 2px solid black;
+  padding: 10px;
+  height: 36vh;
+  width: 80vw;
+  background: cornsilk;
+  border-radius: 6px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profiler div {
+  width: 100%;
+}
+.profiler h3 {
+  text-align: center;
+  /** font-size: 1.5em **/
+  margin-top: 0;
+  font-weight: bold;
+  /* FONT-WEIGHT: 100 */
+  padding-bottom: 5px;
+  margin-bottom: 0.4em;
+}
+.profiler input {
+  width: 80%;
+  text-align: center;
+}
+.profiler .avatar {
+  border: 5px solid black;
+  margin-bottom: 5px;
+}
+
+.select-button {
+  max-width: 12vw;
+  margin: 3px;
+}
+.select-button select {
+  /** font-size: 1.5em **/
+  margin: 5px 0 0 0;
+}
+
+.selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px 0;
+  background: rgba(0, 0, 0, 0.03);
+  padding: 5px 0;
+}
+.selector button {
+  padding: 4px;
+  border-radius: 12px;
+  margin: 0 10px;
+}
+
+.status-bar {
+  background: #eee;
+  font-size: 10pt;
+}
+.status-bar .status-box {
+  border: 1px solid #888;
+  color: #151515;
+  padding-right: 3px;
+  margin-right: 3px;
+}
+.status-bar .status-box strong {
+  padding: 2px;
+  display: inline-block;
+}
+
+/*# sourceMappingURL=index.css.map */
