@@ -234,6 +234,10 @@ body.light #GameMenu .menu-button.main {
   color: #ccc;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Montserrat, sans-serif;
   font-size: 4vw;
@@ -244,12 +248,29 @@ button {
   border: none;
   font-size: 4vw;
 }
+button.main {
+  background: #ffd400;
+  color: white;
+  text-shadow: 0 0 8px black;
+  font-weight: bold;
+}
+button.main:hover {
+  text-shadow: 0 0 15px black;
+}
+button.main:disabled {
+  background: #3e3718;
+  color: #999;
+  text-shadow: none;
+}
 button.button-round {
   border-radius: 40% !important;
 }
 
 input {
-  font-size: 4vw;
+  font-size: 1.5rem;
+  padding: 5px;
+  text-align: center;
+  border-radius: 5px;
 }
 
 aside .hider {
@@ -260,59 +281,54 @@ aside .hider {
   font-family: "Krona One";
 }
 
-#GameMenu .menu-button {
-  text-align: center;
-  width: 50%;
-  margin: 3px 0;
-  font: bold Montserrat;
-  padding: 5px;
+#gameMenu {
+  margin: 20px;
+  background: darkslateblue;
+  color: white;
+  box-shadow: 0 3px 3px black;
+  overflow: auto;
+  max-height: 95vh;
 }
-#GameMenu .menu-button:first-of-type {
-  margin-top: 15px;
-}
-#GameMenu .menu-button:hover {
-  color: white !important;
-}
-#GameMenu .menu-button.main {
-  /** font-size: 1.2em **/
-}
-#GameMenu #Gooooo {
+#gameMenu #PlayButton {
   width: 100%;
-  box-sizing: border-box;
-  margin: 0;
+  height: 3em;
+  font-size: 1.8em;
 }
-
-#GameResults .modal-body {
-  padding: 20px;
+#gameMenu #PlayButton:hover {
+  font-size: 2em;
 }
-#GameResults .modal-body .image-container {
+#gameMenu #PlayButton:disabled {
+  font-size: 1.8em;
+}
+#gameMenu h1 {
+  padding: 10px;
+  background: floralwhite;
+  color: midnightblue;
+  box-shadow: 0 3px 3px black;
+  margin-top: 15px;
   text-align: center;
-}
-#GameResults .modal-body h1 {
-  margin-top: 0;
 }
 
 #LoginForm {
-  text-align: center;
-  background: darkviolet;
-  color: white;
+  display: flex;
+  align-items: stretch;
 }
-#LoginForm form {
-  text-align: center;
+#LoginForm button {
+  height: 100%;
 }
-#LoginForm form input {
-  margin-top: 10px;
-}
-#LoginForm form input:first-of-type {
-  margin-top: 0;
-}
-#LoginForm form button.menu-button {
-  margin: 10px auto;
+#LoginForm input {
+  width: 100%;
 }
 
 .avatar {
   width: 100px;
   height: 100px;
+}
+
+.flex-justify {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .error {
@@ -321,6 +337,21 @@ aside .hider {
   padding: 10px;
   color: white;
   text-align: center;
+}
+
+.errors-reporter {
+  margin: 20px;
+  padding: 40px;
+  background: darkred;
+  color: white;
+  font-size: 15px;
+}
+.errors-reporter h1 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+.errors-reporter pre {
+  overflow: auto;
 }
 
 .icon {
@@ -350,63 +381,50 @@ aside .hider {
   border: 1px solid #555;
 }
 
-.player-profile {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70% !important;
-  margin: 20px;
-  background: blueviolet;
+.profiler .profiler-body {
+  padding: 5px;
+}
+.profiler .profiler-body .human-profiler {
+  background: linear-gradient(20deg, rgba(0, 0, 0, 0.8), transparent 70%, rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
   padding: 20px;
-  border-radius: 20px;
+  text-align: center;
+}
+.profiler .profiler-body .human-profiler .selector {
+  border: none;
+  background: transparent;
+}
+.profiler .profiler-body .human-profiler button {
   color: white;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  margin: 0 5px;
 }
-.player-profile .menu-button {
-  width: auto !important;
+.profiler .profiler-body .human-profiler button:hover, .profiler .profiler-body .human-profiler button:focus {
+  background: rgba(255, 255, 255, 0.3);
 }
-.player-profile div {
-  text-align: center;
+.profiler .profiler-body .human-profiler button:disabled {
+  background: rgba(0, 0, 0, 0.1);
+  color: #555;
 }
-.player-profile div button {
-  display: inline-block !important;
-  margin: 0 !important;
+.profiler .profiler-body .human-profiler h3 {
+  margin: 0 0 10px 0;
 }
-.player-profile div h4 {
-  flex-grow: 1;
-  margin: 10px;
+.profiler .profiler-body .human-profiler .stage-body + button {
+  margin-top: 10px;
 }
-
-.profiler {
-  margin: 5px;
-  border: 2px solid black;
-  padding: 10px;
-  height: 36vh;
-  width: 80vw;
-  background: cornsilk;
-  border-radius: 6px;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.profiler .profiler-body .human-profiler .stage-body .warning {
+  background: rgba(255, 0, 0, 0.6);
+  color: white;
+  margin: 3px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 0.8rem;
+  display: inline-block;
 }
-.profiler div {
-  width: 100%;
-}
-.profiler h3 {
-  text-align: center;
-  /** font-size: 1.5em **/
-  margin-top: 0;
-  font-weight: bold;
-  /* FONT-WEIGHT: 100 */
-  padding-bottom: 5px;
-  margin-bottom: 0.4em;
-}
-.profiler input {
-  width: 80%;
-  text-align: center;
-}
-.profiler .avatar {
-  margin-bottom: 5px;
+.profiler .profiler-body .human-profiler .stage-body .profile-avatar {
+  width: 25vw;
 }
 
 .select-button {
@@ -425,6 +443,9 @@ aside .hider {
   margin: 5px 0;
   background: rgba(0, 0, 0, 0.03);
   padding: 5px 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent 70%, rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
 }
 .selector button {
   padding: 4px;
@@ -432,19 +453,17 @@ aside .hider {
   margin: 0 10px;
 }
 
-.status-bar {
-  background: #eee;
-  font-size: 10pt;
+.user-info-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.status-bar .status-box {
-  border: 1px solid #888;
-  color: #151515;
-  padding-right: 3px;
-  margin-right: 3px;
+.user-info-card img {
+  width: 20vw;
+  margin-right: 5vw;
 }
-.status-bar .status-box strong {
-  padding: 2px;
-  display: inline-block;
+.user-info-card h3 {
+  text-align: left;
 }
 
 /*# sourceMappingURL=index.css.map */

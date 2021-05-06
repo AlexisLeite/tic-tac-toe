@@ -3,6 +3,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;700&display=swap')
 @import url('https://fonts.googleapis.com/css2?family=Krona+One&family=Orelega+One&display=swap')
 
+$float-shadow: 0 3px 3px black
+
+*
+  box-sizing: border-box
+
 body
   font-family: Montserrat, sans-serif
   font-size: 4vw
@@ -11,12 +16,30 @@ button
   background: none
   border: none
   font-size: 4vw
+  
+  &.main
+    background: #ffd400
+    color: white
+    text-shadow: 0 0 8px black
+    font-weight: bold
+
+    &:hover
+      text-shadow: 0 0 15px black
+
+    &:disabled
+      background: #3e3718
+      color: #999
+      text-shadow: none
+
 
   &.button-round
     border-radius: 40% !important
 
 input
-  font-size: 4vw
+  font-size: 1.5rem
+  padding: 5px
+  text-align: center
+  border-radius: 5px
 
 aside
   .hider
@@ -27,60 +50,52 @@ aside
     .board-square
       font-family: 'Krona One'
 
-#GameMenu
-  .menu-button
-    text-align: center
-    width: 50%
-    margin: 3px 0
-    font: bold  Montserrat
-    padding: 5px
+  
+#gameMenu
+  margin: 20px
+  background: darkslateblue
+  color: white
+  box-shadow: $float-shadow
+  overflow: auto
+  max-height: 95vh
 
-    &:first-of-type
-      margin-top: 15px
-
-    &:hover
-      color: white !important
-
-    &.main
-      /** font-size: 1.2em **/
-
-  #Gooooo
+  #PlayButton
     width: 100%
-    box-sizing: border-box
-    margin: 0
+    height: 3em
+    font-size: 1.8em
 
-#GameResults
-  .modal-body
-    padding: 20px
+    &:hover 
+      font-size: 2em
 
-    .image-container
-      text-align: center
+    &:disabled
+      font-size: 1.8em
 
-    h1
-      margin-top: 0
+  h1
+    padding: 10px
+    background: floralwhite
+    color: midnightblue
+    box-shadow: $float-shadow
+    margin-top: 15px
+    text-align: center
 
 #LoginForm
-  text-align: center
-  background: darkviolet
-  color: white
+  display: flex
+  align-items: stretch
 
-  form
-    text-align: center
-
-    input
-      margin-top: 10px
-
-      &:first-of-type
-        margin-top: 0
-
-    button
-
-      &.menu-button
-        margin: 10px auto
+  button
+    height: 100%
+  
+  input
+    width: 100%
 
 .avatar
   width: 100px
   height: 100px
+
+.flex-justify
+  display: flex
+  justify-content: center
+  align-items: center
 
 .error
   background: crimson
@@ -88,6 +103,20 @@ aside
   padding: 10px
   color: white
   text-align: center
+
+.errors-reporter
+  margin: 20px    
+  padding: 40px 
+  background: darkred
+  color: white
+  font-size: 15px
+
+  h1
+    margin-top: 0
+    font-size: 1.6rem
+
+  pre
+    overflow: auto
 
 .icon 
   cursor: pointer
@@ -119,62 +148,50 @@ aside
       padding: 3px
       border: 1px solid #555
 
-.player-profile
-  display: flex
-  align-items: center
-  justify-content: center
-  width: 70% !important
-  margin: 20px
-  background: blueviolet
-  padding: 20px
-  border-radius: 20px
-  color: white
-
-  .menu-button
-    width: auto !important
-
-  div
-    text-align: center
-
-    button
-      display: inline-block !important
-      margin: 0 !important
-
-    h4
-      flex-grow: 1
-      margin: 10px
-
 .profiler
-  margin: 5px
-  border: 2px solid black 
-  padding: 10px 
-  height: 36vh  
-  width: 80vw
-  background: cornsilk  
-  border-radius: 6px  
-  overflow: auto  
-  display: flex
-  flex-direction: column
-  align-items: center
+  .profiler-body
+    padding: 5px
 
-  div
-    width: 100%
+    .human-profiler
+      background: linear-gradient(20deg, rgba(0,0,0,0.8), transparent 70%, rgba(255,255,255, 0.1))
+      border: 1px solid rgba(255,255,255,0.2)
+      border-radius: 5px
+      padding: 20px
+      text-align: center
 
-  h3
-    text-align: center
-    /** font-size: 1.5em **/
-    margin-top: 0
-    font-weight: bold
-    /* FONT-WEIGHT: 100 */
-    padding-bottom: 5px
-    margin-bottom: 0.4em
+      .selector
+        border: none
+        background: transparent
 
-  input
-    width: 80%
-    text-align: center
+      button
+        color: white
+        background: rgba(255,255,255,0.1)
+        padding: 15px
+        margin: 0 5px
+        &:hover, &:focus
+          background: rgba(255,255,255,0.3)
+        &:disabled
+          background: rgba(0,0,0,0.1)
+          color: #555
 
-  .avatar
-    margin-bottom: 5px
+      h3
+        margin: 0 0 10px 0
+
+      .stage-body 
+        & + button
+          margin-top: 10px
+
+        .warning
+          background: rgba(255,0,0,0.6)
+          color: white
+          margin: 3px
+            top: 10px 
+          padding: 10px 20px
+          font-size: 0.8rem
+          display: inline-block
+
+        .profile-avatar
+          width: 25vw
 
 .select-button
   max-width: 12vw
@@ -191,24 +208,23 @@ aside
   margin: 5px 0
   background: rgba(0,0,0,0.03)
   padding: 5px 0
+  background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent 70%, rgba(255,255,255, 0.03))
+  border: 1px solid rgba(255,255,255,0.1)
+  border-radius: 5px
 
   button
     padding: 4px
     border-radius: 12px
     margin: 0 10px
 
-.status-bar
-  background: #eee
-  font-size: 10pt
+.user-info-card
+  display: flex
+  align-items: center
+  justify-content: center
 
-  $border-status-box: 1px solid #888
+  img
+    width: 20vw
+    margin-right: 5vw
 
-  .status-box
-    border: $border-status-box
-    color: #151515
-    padding-right: 3px
-    margin-right: 3px
-
-    strong
-      padding: 2px
-      display: inline-block
+  h3
+    text-align: left
