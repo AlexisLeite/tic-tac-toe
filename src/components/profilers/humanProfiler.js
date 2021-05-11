@@ -87,7 +87,9 @@ class HumanProfiler extends Component {
         );
         break;
       case STAGE_PROFILE:
-        Stage = <UserInfoCard profile={this.player.value.profile} />;
+        Stage = (
+          <UserInfoCard profile={{ ...this.player.value.profile, kind: this.player.value.kind }} />
+        );
         break;
       case STAGE_GUEST:
         Stage = this.state.loadingLogin ? (
@@ -160,4 +162,4 @@ HumanProfiler.propTypes = {
   slot: PropTypes.oneOf(["main", "secondary"]).isRequired,
 };
 
-export default HumanProfiler;
+export { HumanProfiler };

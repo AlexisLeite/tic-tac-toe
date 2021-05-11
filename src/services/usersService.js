@@ -96,9 +96,12 @@ export class LoginForm extends React.PureComponent {
 export class UserInfoCard extends React.PureComponent {
   render() {
     return (
-      <div className="user-info-card">
+      <div className={`${this.props.className ?? ""} user-info-card`}>
         <img alt="User avatar" src={this.props.profile.avatar} />
-        <h3>{this.props.profile.name}</h3>
+        <div>
+          <h3 className="user-info-card-name">{this.props.profile.name}</h3>
+          <h5 className="user-info-card-kind">{this.props.profile.kind}</h5>
+        </div>
       </div>
     );
   }

@@ -10,7 +10,7 @@ The modal is a dialog box that can be used to show any element. When it's closed
       showModal: true
     })
   }}>Abrir cuadro de suscripción</button>
-  
+
   <Modal onClose={()=>{setState({showModal:false})}}
     show={this.state.showModal}
     title="Suscríbete">
@@ -28,3 +28,4 @@ You can set the canClose property to false in order to prevent the user from ckl
 - **id** set the modal id
 - **className** sets an aditional class name to the modal
 - **textAlign** set the text alignment
+- **centeredFlex** the body of the modal will be a flex and the items will be centered

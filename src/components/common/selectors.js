@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import {
-  AiFillCaretLeft as IconLeft,
-  AiFillCaretRight as IconRight,
-} from "react-icons/ai";
+import { AiFillCaretLeft as IconLeft, AiFillCaretRight as IconRight } from "react-icons/ai";
 import { PropTypes } from "prop-types";
 
 class Selector extends Component {
@@ -18,7 +15,7 @@ class Selector extends Component {
     super(props);
 
     this.state = {
-      value: props.value,
+      value: props.value < props.options.length ? props.value : 0,
     };
 
     this.shoutChange();
@@ -27,30 +24,54 @@ class Selector extends Component {
   componentDidUpdate(prevProps, prevState) {
     let currentOptions = this.props.options.map((el) => this.props.map(el));
     let previousOptions = prevProps.options.map((el) => this.props.map(el));
-    let shoutChanges = false;
 
-    if (currentOptions.length !== previousOptions.length) {
-      let index = currentOptions.indexOf(previousOptions[this.state.value]);
-      if (index !== -1 && index !== this.state.value)
-        this.setState({ value: index });
-      else if (this.state.value >= this.props.options.length)
-        this.setState({ value: this.props.options.length - 1 });
-      else shoutChanges = true;
+    /** Situations where the changes affect:
+     *
+     *  - Options changed, those will always change from props
+     *  - Value is changed in state
+     *  - Value is changed in props
+     */
+
+    // Options changed in props
+    if (previousOptions.length !== currentOptions.length) {
+      let prevValue = previousOptions[prevState.value];
+
+      // If the previous value is still present, then keep it
+      if (currentOptions.includes(prevValue))
+        return this.setState({ value: currentOptions.indexOf(prevValue) });
+
+      // If the previos value is not present, prevent value from being invalid
+      if (this.state >= currentOptions.length)
+        return this.setState({ value: currentOptions.length - 1 });
     }
 
-    if (prevState.value !== this.state.value || shoutChanges) {
-      this.shoutChange();
-    }
+    // Value changed in state
+    if (prevState.value !== this.state.value) this.shoutChange();
+
+    // Value changed in properties and it's a correct value
+    if (
+      prevProps.value !== this.props.value &&
+      this.props.value !== this.state.value &&
+      this.inBoundaries(this.props.value)
+    )
+      return this.setState({ value: this.props.value });
+  }
+
+  inBoundaries(value) {
+    return value >= 0 && value < this.props.options.length;
   }
 
   shoutChange() {
-    this.props.onChange(this.state.value, this.props.options[this.state.value]);
+    if (this.inBoundaries(this.state.value)) {
+      this.props.onChange(this.state.value, this.props.options[this.state.value]);
+    }
   }
 
   render() {
     return (
       <div className={`selector ${this.props.className}`}>
         <button
+          className="selector-button"
           onClick={(e) => {
             let value = this.state.value;
             value = value - 1 < 0 ? this.props.options.length - 1 : value - 1;
@@ -64,6 +85,7 @@ class Selector extends Component {
         {this.props.options[this.state.value] &&
           this.props.map(this.props.options[this.state.value])}
         <button
+          className="selector-button"
           onClick={(e) => {
             let value = this.state.value;
             value = value + 1 >= this.props.options.length ? 0 : value + 1;

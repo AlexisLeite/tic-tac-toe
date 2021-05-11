@@ -1,46 +1,8 @@
-import HumanProfiler from "components/profilers/humanProfiler";
+import { HumanProfiler } from "components/common/profilers";
 import { GameFlowService } from "services";
 import { EasyEvents, ucFirst } from "common";
-
-class Player {
-  hash = "";
-
-  boardClick(square) {}
-
-  constructor(profile) {
-    this.___profile = profile;
-  }
-
-  get profile() {
-    return this.___profile;
-  }
-
-  static get profiler() {
-    return function () {
-      return (
-        <>
-          <h3 className="warning">This must be probably a mistake.</h3>
-          <p>
-            A profiler was instantiated but none was declared. This warning belongs to the fallback
-            profiler declared on Player class
-          </p>
-        </>
-      );
-    };
-  }
-
-  getTurn() {
-    console.warn(
-      "A player has been given the current turn but it has not implemented the getTurn method."
-    );
-  }
-
-  onLose() {}
-
-  updateHash(hash) {
-    this.hash = hash;
-  }
-}
+import { Player } from "./player";
+import { ComputerPlayer } from "./computerPlayer";
 
 class HumanPlayer extends Player {
   static publicName = "Human player";
@@ -57,11 +19,6 @@ class HumanPlayer extends Player {
   getTurn() {
     this.hasTurn = true;
   }
-}
-
-class ComputerPlayer extends Player {
-  static publicName = "Computer player";
-  kind = "Computer";
 }
 
 class OnlinePlayer extends Player {
@@ -94,6 +51,16 @@ class PlayerShortcut {
 
   get possibleClasses() {
     return PlayersService[`${this.slot}PlayerPossibleClasses`];
+  }
+
+  // Properties
+
+  get hash() {
+    return PlayersService[`${this.slot}Player`].hash;
+  }
+
+  get kind() {
+    return PlayersService[`${this.slot}Player`].kind;
   }
 
   get profile() {
@@ -198,6 +165,5 @@ class PlayersServiceClass {
 }
 
 const PlayersService = new PlayersServiceClass();
-const PlayersSlots = ["main", "secondary"];
 
-export { PlayersService, PlayersSlots, Player, HumanPlayer, ComputerPlayer, OnlinePlayer };
+export { PlayersService, Player, HumanPlayer, ComputerPlayer, OnlinePlayer };

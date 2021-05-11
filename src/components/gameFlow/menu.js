@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { PlayersService } from "services";
 import { translate } from "common";
-import PlayerProfiler from "../common/profilers";
+import { PlayerProfiler } from "../common/profilers";
 import { PropTypes } from "prop-types";
 
 export default class Menu extends Component {
@@ -14,13 +14,13 @@ export default class Menu extends Component {
     this.mainSuscription = this.mainPlayer.on("change", (mainPlayer) =>
       this.setState({ mainPlayer })
     );
-    this.secondarySuscription = this.secondaryPlayer.on("change", (secondaryPlayer) =>
-      this.setState({ secondaryPlayer })
-    );
+    this.secondarySuscription = this.secondaryPlayer.on("change", (secondaryPlayer) => {
+      this.setState({ secondaryPlayer });
+    });
 
     this.state = {
-      mainPlayer: this.mainPlayer,
-      secondaryPlayer: this.secondaryPlayer,
+      mainPlayer: this.mainPlayer.value,
+      secondaryPlayer: this.secondaryPlayer.value,
     };
   }
 

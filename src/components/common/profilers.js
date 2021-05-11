@@ -1,8 +1,12 @@
 import React, { PureComponent } from "react";
 import { PropTypes } from "prop-types";
 import { PlayersService } from "services";
-import { exists, translate } from "common";
+import { env, exists, translate } from "common";
 import { Selector } from "../common";
+
+export * from "../profilers/computerProfiler";
+export * from "../profilers/guestProfiler";
+export * from "../profilers/humanProfiler";
 
 class PlayerProfiler extends PureComponent {
   static defaultProps = {
@@ -23,13 +27,14 @@ class PlayerProfiler extends PureComponent {
 
     // If the profiler belongs to the secondary slot, it must listen to possible classes changes
     // in order to prevent the secondary player from being of an incorrect type
-    if (this.slot.toLowerCase() === "secondary")
+    if (this.slot.toLowerCase() === "secondary") {
       this.possibleClassesChangeSuscription = this.player.on(
         "PossibleClassesChange",
         (possibleClasses) => {
           this.setState({ selectorOptions: possibleClasses });
         }
       );
+    }
 
     this.state = {
       selectorOptions: this.player.possibleClasses,
@@ -38,9 +43,8 @@ class PlayerProfiler extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.player.off("change", this.playerChangeSuscription);
-    if (this.possibleClassesChangeSuscription)
-      this.player.off("PossibleClassesChange", this.possibleClassesChangeSuscription);
+    exists(this, "playerChangeSuscription.cancel", (cancel) => cancel());
+    exists(this, "possibleClassesChangeSuscription.cancel", (cancel) => cancel());
   }
 
   render() {
@@ -55,6 +59,7 @@ class PlayerProfiler extends PureComponent {
                 <h1>{translate(`Choose ${this.slot} player`)}</h1>
                 <Selector
                   options={this.state.selectorOptions}
+                  slot={this.slot}
                   map={(value) => translate(value.publicName)}
                   onChange={(i, chosenClass) => {
                     this.player.set = null;
@@ -83,8 +88,8 @@ class PlayerProfiler extends PureComponent {
 }
 
 PlayerProfiler.propTypes = {
-  slot: PropTypes.oneOf(PlayersService.availableSlots).isRequired,
+  slot: PropTypes.oneOf(env("slots").split(",")).isRequired,
   onReady: PropTypes.func,
 };
 
-export default PlayerProfiler;
+export { PlayerProfiler };

@@ -12,6 +12,16 @@ export function asDebugable(thisObject) {
   };
 }
 
+// Usage: className(ifOneClass,"oneClass",ifSecondClass,"secondClass"...)
+export function className(...args) {
+  if (args.length % 2 !== 0) args = args.slice(0, args.length - 1);
+  let classes = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i]) classes.push(args[++i]);
+  }
+  return { className: classes.join(" ") };
+}
+
 export function consoleAccess(name, obj) {
   window[name] = obj;
 }
@@ -176,7 +186,13 @@ export function EasyEvents() {
           onRegisterCb.callback(callback);
         }
 
-        return { callback, id };
+        return {
+          callback,
+          id,
+          cancel: () => {
+            this[`off${name}`]({ callback, id });
+          },
+        };
       }
     };
     this[`onRegister${name}`] = function (cb) {
@@ -215,6 +231,12 @@ export function hashes(ammount) {
   return window.crypto.getRandomValues(array);
 }
 
+export function max(...args) {
+  let current = -Infinity;
+  for (let arg of args) if (arg > current) current = arg;
+  return current;
+}
+
 export function MultiStage(props) {
   let results = [];
   for (let stage of props.stages) {
@@ -231,6 +253,10 @@ export function MultiStage(props) {
 
 export function required(name) {
   throw Error(`The parameter ${name} is required`);
+}
+
+export function round(val, digits) {
+  return Math.round(val * 10 ** digits) / 10 ** digits;
 }
 
 var translations = null;

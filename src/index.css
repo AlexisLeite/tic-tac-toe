@@ -273,10 +273,6 @@ input {
   border-radius: 5px;
 }
 
-aside .hider {
-  text-align: center;
-}
-
 #Board .board-row .board-square {
   font-family: "Krona One";
 }
@@ -291,14 +287,15 @@ aside .hider {
 }
 #gameMenu #PlayButton {
   width: 100%;
-  height: 3em;
-  font-size: 1.8em;
+  height: 6rem;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
 }
 #gameMenu #PlayButton:hover {
-  font-size: 2em;
+  font-size: 3rem;
 }
 #gameMenu #PlayButton:disabled {
-  font-size: 1.8em;
+  font-size: 2.5rem;
 }
 #gameMenu h1 {
   padding: 10px;
@@ -358,6 +355,34 @@ aside .hider {
   cursor: pointer;
 }
 
+.menu .modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.menu .modal-body h1, .menu .modal-body h2, .menu .modal-body h3, .menu .modal-body h4, .menu .modal-body h5 {
+  margin: 0.3rem 0;
+}
+.menu .modal-body button {
+  margin: 0.2rem;
+  width: 60%;
+}
+.menu .modal-body .options {
+  margin: 0.4rem;
+}
+.menu button {
+  padding: 10px;
+  margin: 10px;
+  background: black;
+  font-weight: bold;
+  color: darkgoldenrod;
+}
+.menu button:hover, .menu button:active, .menu button:focus {
+  background: #111;
+  color: #eccb79;
+}
+
 .modal-background {
   background: rgba(0, 0, 0, 0.3);
 }
@@ -381,32 +406,92 @@ aside .hider {
   border: 1px solid #555;
 }
 
+.playingInterface {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+}
+.playingInterface .current-players {
+  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+}
+.playingInterface .current-players .user-info-card img {
+  margin: 10px;
+}
+.playingInterface .current-players .user-info-card:last-of-type {
+  flex-direction: row-reverse;
+}
+.playingInterface .current-players .user-info-card.playing {
+  color: #e4ff00;
+  text-shadow: 0 0 15px #dccc56;
+}
+.playingInterface .current-players .user-info-card.playing img {
+  box-shadow: 0 0 35px #dccc56;
+  border-radius: 50%;
+}
+.playingInterface .options-bar {
+  width: 100%;
+  text-align: right;
+}
+.playingInterface .options-bar button {
+  padding: 5px;
+  background: white;
+  margin: 5px;
+}
+.playingInterface #Board {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .profiler .profiler-body {
   padding: 5px;
-}
-.profiler .profiler-body .human-profiler {
   background: linear-gradient(20deg, rgba(0, 0, 0, 0.8), transparent 70%, rgba(255, 255, 255, 0.1));
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  padding: 20px;
+}
+.profiler .profiler-body button {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  margin: 10px 5px 5px 5px;
+}
+.profiler .profiler-body button:hover, .profiler .profiler-body button:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+.profiler .profiler-body button:disabled {
+  background: rgba(0, 0, 0, 0.1);
+  color: #555;
+}
+.profiler .profiler-body .computer-profiler {
   text-align: center;
+}
+.profiler .profiler-body .computer-profiler .selector div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profiler .profiler-body .computer-profiler img {
+  width: 20vw;
+}
+.profiler .profiler-body .computer-profiler h3, .profiler .profiler-body .computer-profiler p {
+  margin: 0;
+}
+.profiler .profiler-body .human-profiler {
+  border-radius: 5px;
+  text-align: center;
+}
+.profiler .profiler-body .human-profiler .stage-0, .profiler .profiler-body .human-profiler .stage-3 {
+  padding: 20px;
 }
 .profiler .profiler-body .human-profiler .selector {
   border: none;
   background: transparent;
-}
-.profiler .profiler-body .human-profiler button {
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  padding: 15px;
-  margin: 0 5px;
-}
-.profiler .profiler-body .human-profiler button:hover, .profiler .profiler-body .human-profiler button:focus {
-  background: rgba(255, 255, 255, 0.3);
-}
-.profiler .profiler-body .human-profiler button:disabled {
-  background: rgba(0, 0, 0, 0.1);
-  color: #555;
 }
 .profiler .profiler-body .human-profiler h3 {
   margin: 0 0 10px 0;
@@ -425,6 +510,43 @@ aside .hider {
 }
 .profiler .profiler-body .human-profiler .stage-body .profile-avatar {
   width: 25vw;
+}
+
+.results {
+  text-align: center;
+}
+.results .modal-body {
+  padding: 1rem !important;
+}
+.results h1 {
+  margin: 0 0 1rem 0;
+  color: #ffdf00;
+}
+.results h5 {
+  margin: 0 0 1rem 0;
+  color: #adf7ad;
+}
+.results .options button {
+  width: auto;
+}
+.results .streak {
+  display: flex;
+  justify-content: space-around;
+  width: 80vw;
+  padding: 0 5vw;
+}
+.results .streak .player-streak {
+  display: flex;
+  flex-direction: column;
+  font-size: 2rem;
+  align-items: center;
+  font-weight: bold;
+}
+.results .streak .player-streak img {
+  width: 30vw;
+}
+.results .streak .player-streak .player-streak-number {
+  color: #ffdf00;
 }
 
 .select-button {
@@ -447,7 +569,7 @@ aside .hider {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 5px;
 }
-.selector button {
+.selector button.selector-button {
   padding: 4px;
   border-radius: 12px;
   margin: 0 10px;
@@ -462,8 +584,9 @@ aside .hider {
   width: 20vw;
   margin-right: 5vw;
 }
-.user-info-card h3 {
+.user-info-card h3.user-info-card-name, .user-info-card h5.user-info-card-kind {
   text-align: left;
+  margin: 0 !important;
 }
 
 /*# sourceMappingURL=index.css.map */

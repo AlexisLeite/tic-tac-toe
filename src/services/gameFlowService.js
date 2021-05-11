@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import { Component } from "react";
 import { hashes, EasyEvents, ucFirst, exists, required, consoleAccess } from "common";
 import { PlayersService } from "services";
 
@@ -9,21 +9,56 @@ class GameEndReason {
 }
 
 class GamesHistory {
-  currentGame = -1;
+  _currentGame = -1;
+  maxGamesSaved = 5;
+  gamePath = "";
   games = [];
+  streak = new (function () {
+    this.hashes = [null, null];
+    this.push = (currentGame) => {
+      if (currentGame.hashes[0] !== this.hashes[0] || currentGame.hashes[1] !== this.hashes[1]) {
+        this.hashes = [currentGame.hashes[0], currentGame.hashes[1]];
+        this.wins = [0, 0];
+      }
+      if (currentGame.endReason.winner) {
+        this.wins[this.hashes.indexOf(currentGame.endReason.winner.hash)]++;
+      } else if (currentGame.endReason.reason === "Draw") {
+        this.wins[0]++;
+        this.wins[1]++;
+      }
+    };
+  })();
 
   endGame(reason) {
-    this.games[this.currentGame].endReason = reason;
+    this.currentGame.endReason = reason;
+    this.streak.push(this.currentGame);
+    this.gamePath = "";
+  }
+
+  get currentGame() {
+    if (this.games.length) return this.games[this._currentGame];
+    return null;
+  }
+
+  get lastGame() {
+    if (this.games.length) return this.games[this.games.length - 1];
+    return null;
   }
 
   move(details) {
-    if (this.currentGame === -1) console.warn("Tried to add move to history while no game active");
-    else this.games[this.currentGame].moves.push(details);
+    if (!this.currentGame) console.warn("Tried to add move to history while no game active");
+    else {
+      if (this.gamePath.length) this.gamePath += ".";
+      this.gamePath += details.square;
+      this.currentGame.moves.push(details);
+    }
   }
 
   newGame(data) {
     this.games.push({ ...data, moves: [] });
-    this.currentGame = this.games.length - 1;
+    if (this.games.length > this.maxGamesSaved)
+      this.games = this.games.slice(this.games.length - this.maxGamesSaved);
+    this._currentGame = this.games.length - 1;
     return this.currentGame;
   }
 }
@@ -37,7 +72,7 @@ class MoveEvent {
 class GameFlowServiceClass {
   _boardStatus = Array(9).fill(null);
   get boardStatus() {
-    return this._boardStatus;
+    return [...this._boardStatus];
   }
 
   // Players handling
@@ -86,18 +121,7 @@ class GameFlowServiceClass {
   }
 
   checkGame() {
-    let lines = [
-      [0, 1, 2],
-      [0, 4, 8],
-      [0, 3, 6],
-      [3, 4, 5],
-      [6, 4, 2],
-      [6, 7, 8],
-      [1, 4, 7],
-      [2, 5, 8],
-    ];
-
-    for (let line of lines) {
+    for (let line of Board.lines) {
       const [a, b, c] = line;
       if (
         this.boardStatus[a] === this.boardStatus[b] &&
@@ -117,24 +141,31 @@ class GameFlowServiceClass {
   }
 
   endGame(reason) {
-    this.fireGameEnd(reason);
-    this.playing = false;
     this.history.endGame(reason);
+    this.playing = false;
+    this.fireGameEnd(reason);
+  }
+
+  getByHash(hash) {
+    let index = this.hashes.indexOf(hash);
+    return exists(this, `players.${index}`);
   }
 
   move(hash, square) {
     if (!this.playing) return;
     if (this.hashes.indexOf(hash) === this.turn) {
-      if (this.boardStatus[square] !== null)
+      if (this.boardStatus[square] !== null) {
+        console.log(this.boardStatus, square, this.boardStatus[square]);
         console.log(
           "%cThe selected move can't be performed, the square is already checked",
           "color:green"
         );
-      else {
+      } else {
         this._boardStatus[square] = this.turn;
         this.fireBoardUpdate(this.boardStatus);
         this.fireMove(new MoveEvent(square, this.turnOwner));
         this.history.move({
+          square,
           turn: this.turn,
           name: this.currentPlayer.value.profile.name,
           boardStatus: [...this.boardStatus],
@@ -191,6 +222,7 @@ class GameFlowServiceClass {
 
           // Set players hashes
           if (this.mainPlayer.value.hash !== this.hashes[0]) {
+            this.hashes[0] = midHashes[0];
             this.mainPlayer.value.updateHash(midHashes[0]);
             exists(this, "mainPlayerSuscription", (suscription) =>
               this.mainPlayer.off("change", suscription)
@@ -201,6 +233,7 @@ class GameFlowServiceClass {
             });
           }
           if (this.secondaryPlayer.value.hash !== this.hashes[1]) {
+            this.hashes[1] = midHashes[1];
             this.secondaryPlayer.value.updateHash(midHashes[1]);
             exists(this, "secondaryPlayerSuscription", (suscription) =>
               this.secondaryPlayer.off("change", suscription)
@@ -221,29 +254,45 @@ class GameFlowServiceClass {
         this.playing = true;
         this.clearBoard();
         this.fireGameStart(this.turn);
-        this.history.newGame();
+        this.history.newGame({
+          hashes: [...this.hashes],
+        });
         this.shoutTurn();
       } else console.warn("Trying to start a game without both players ready");
     } else console.warn("Trying to start a game when a game has already started.");
   }
 }
 
-class Board extends PureComponent {
+class Board extends Component {
+  static defaultProps = {
+    mainMark: "X",
+    secondaryMark: "O",
+  };
+
+  static lines = [
+    [0, 1, 2],
+    [0, 4, 8],
+    [0, 3, 6],
+    [3, 4, 5],
+    [6, 4, 2],
+    [6, 7, 8],
+    [1, 4, 7],
+    [2, 5, 8],
+  ];
+
   constructor(props) {
     super(props);
 
     this.state = {
-      squares: Array(9).fill(null),
+      squares: GameFlowService._boardStatus,
       winnerRow: [],
     };
 
-    this.boardUpdateSuscription = GameFlowService.onBoardUpdate((squares) =>
+    this.boardUpdateSuscription = GameFlowService.onBoardUpdate((squares) => {
       this.setState({
-        squares: squares.map((el) => {
-          return el === 0 ? "X" : el === 1 ? "O" : null;
-        }),
-      })
-    );
+        squares,
+      });
+    });
     this.gameEndSuscription = GameFlowService.onGameEnd((endReason) => {
       if (endReason.reason === "Winner") {
         this.setState({
@@ -265,9 +314,9 @@ class Board extends PureComponent {
   }
 
   componentWillUnmount() {
-    GameFlowService.offBoardUpdate(this.boardUpdateSuscription);
-    GameFlowService.offGameEnd(this.gameEndSuscription);
-    GameFlowService.offGameStart(this.gameStartSuscription);
+    exists(this, "boardUpdateSuscription.cancel", (cancel) => cancel());
+    exists(this, "gameEndSuscription.cancel", (cancel) => cancel());
+    exists(this, "gameStartSuscription.cancel", (cancel) => cancel());
   }
 
   render() {
@@ -282,7 +331,11 @@ class Board extends PureComponent {
             className={`board-square ${this.state.winnerRow.includes(key) ? "winner" : ""}`}
             key={key}
           >
-            {this.state.squares[key]}
+            {this.state.squares[key] === 0
+              ? this.props.mainMark
+              : this.state.squares[key] === 1
+              ? this.props.secondaryMark
+              : ""}
           </button>
         );
         rowSquares.push(button);
