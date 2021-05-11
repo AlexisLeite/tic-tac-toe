@@ -13,7 +13,9 @@ import {
   GameFlowService,
 } from "services";
 
-const testing = false;
+import Chat from "./test/chat";
+
+const testing = true;
 
 consoleAccess("q", {
   ComputerPlayer,
@@ -37,8 +39,7 @@ class Test extends React.Component {
   render() {
     return (
       <>
-        <Selector />
-        <Selector />
+        <Chat />
       </>
     );
   }

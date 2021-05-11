@@ -246,7 +246,7 @@ body {
 button {
   background: none;
   border: none;
-  font-size: 4vw;
+  font-size: 1.5rem;
 }
 button.main {
   background: #ffd400;
@@ -587,6 +587,41 @@ input {
 .user-info-card h3.user-info-card-name, .user-info-card h5.user-info-card-kind {
   text-align: left;
   margin: 0 !important;
+}
+
+.chat {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.chat textarea {
+  width: 100%;
+  height: calc(100vh - 60px);
+}
+.chat .commands {
+  display: flex;
+}
+.chat .commands * {
+  height: 60px;
+  margin: 3px 2px;
+}
+.chat .commands input {
+  flex-grow: 1;
+}
+.chat .commands button {
+  background: #00c100;
+  border-radius: 4px;
+  color: white;
+  text-shadow: 0 0 3px black;
+}
+.chat .commands button:hover, .chat .commands button:active, .chat .commands button:focus {
+  text-shadow: 0 0 3px white;
+  background: lime;
 }
 
 /*# sourceMappingURL=index.css.map */
