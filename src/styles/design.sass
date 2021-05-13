@@ -147,6 +147,7 @@ input
 
 .modal-background
   background: rgba(0,0,0,0.3)
+  z-index: 100
 
   .modal
 
@@ -362,9 +363,35 @@ input
 
   overflow: auto
 
-  textarea
+  .modal-body
+    display: flex
+    align-items: center
+    justify-content: center
+    height: auto
+    min-height: 0 !important
+
+    form 
+      display: flex
+      flex-direction: column
+
+      button
+        margin: 10px
+
+  button
+    background: #00c100
+    border-radius: 4px
+    color: white
+    text-shadow: 0 0 3px black
+    padding: 10px
+
+    @include hover
+      text-shadow: 0 0 3px white
+      background: lime
+
+  .chat-body
     width: 100%
     height: calc(100vh - 60px)
+    overflow: auto
 
   .commands 
     *
@@ -375,16 +402,6 @@ input
 
     input
       flex-grow: 1
-
-    button
-      background: #00c100
-      border-radius: 4px
-      color: white
-      text-shadow: 0 0 3px black
-
-      @include hover
-        text-shadow: 0 0 3px white
-        background: lime
 
     
     

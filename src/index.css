@@ -385,6 +385,7 @@ input {
 
 .modal-background {
   background: rgba(0, 0, 0, 0.3);
+  z-index: 100;
 }
 .modal-background .modal .modal-header {
   border-top-left-radius: 5px;
@@ -599,9 +600,35 @@ input {
   flex-direction: column;
   overflow: auto;
 }
-.chat textarea {
+.chat .modal-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto;
+  min-height: 0 !important;
+}
+.chat .modal-body form {
+  display: flex;
+  flex-direction: column;
+}
+.chat .modal-body form button {
+  margin: 10px;
+}
+.chat button {
+  background: #00c100;
+  border-radius: 4px;
+  color: white;
+  text-shadow: 0 0 3px black;
+  padding: 10px;
+}
+.chat button:hover, .chat button:active, .chat button:focus {
+  text-shadow: 0 0 3px white;
+  background: lime;
+}
+.chat .chat-body {
   width: 100%;
   height: calc(100vh - 60px);
+  overflow: auto;
 }
 .chat .commands {
   display: flex;
@@ -612,16 +639,6 @@ input {
 }
 .chat .commands input {
   flex-grow: 1;
-}
-.chat .commands button {
-  background: #00c100;
-  border-radius: 4px;
-  color: white;
-  text-shadow: 0 0 3px black;
-}
-.chat .commands button:hover, .chat .commands button:active, .chat .commands button:focus {
-  text-shadow: 0 0 3px white;
-  background: lime;
 }
 
 /*# sourceMappingURL=index.css.map */

@@ -30,8 +30,10 @@ export class Modal extends Component {
     };
   }
 
-  close = () => {
-    if (!this.props.canClose) return;
+  backgroundRef = React.createRef();
+
+  close = (ev) => {
+    if (!this.props.canClose || ev.target !== this.backgroundRef.current) return;
 
     this.setState({
       show: false,
@@ -52,6 +54,7 @@ export class Modal extends Component {
       this.state.show && (
         <div
           onClick={this.close}
+          ref={this.backgroundRef}
           className={`modal-background ${this.props.className}`}
         >
           <div
@@ -59,14 +62,8 @@ export class Modal extends Component {
             style={{ textAlign: this.props.textAlign }}
             className={`modal`}
           >
-            {this.props.title && (
-              <div className="modal-header">{this.props.title}</div>
-            )}
-            <div
-              className={`modal-body ${
-                this.props.centeredFlex ? "flex-justify" : ""
-              }`}
-            >
+            {this.props.title && <div className="modal-header">{this.props.title}</div>}
+            <div className={`modal-body ${this.props.centeredFlex ? "flex-justify" : ""}`}>
               {this.props.children}
             </div>
           </div>
