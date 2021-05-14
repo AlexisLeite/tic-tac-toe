@@ -11,13 +11,53 @@ class ServerCommunications {
       },
     };
     fetch(uri, { ...commonOptions, ...options, signal: controller.signal })
-      .then((res) => res.json())
-      .then((jsonRes) => {
-        if (exists(jsonRes, "error")) throw jsonRes;
-        console.log(`Server response fetched on uri ${uri}`, jsonRes);
-        for (let cb of callbacks) cb(jsonRes);
+      .then((response) => {
+        return new Promise((resolve) => {
+          let text = null,
+            json = null;
+
+          function tryResolve() {
+            if (text !== null && json !== null) resolve({ text, json });
+          }
+
+          response
+            .clone()
+            .text()
+            .then((res) => {
+              text = res;
+              tryResolve();
+            })
+            .catch((error) => {
+              text = { error };
+              tryResolve();
+            });
+          response
+            .json()
+            .then((res) => {
+              json = res;
+              tryResolve();
+            })
+            .catch((error) => {
+              json = { error };
+              tryResolve();
+            });
+        });
+      })
+      .then((parsedResponse) => {
+        const { text, json } = parsedResponse;
+        if (
+          (typeof text === "object" && text !== null && "error" in text) ||
+          (typeof json === "object" && json !== null && "error" in json)
+        )
+          throw parsedResponse;
+
+        //console.log(`Server response fetched on uri ${uri}`, json);
+        for (let cb of callbacks) cb({ text, json });
       })
       .catch((error) => {
+        console.error("Error on fetching:");
+        console.error(error);
+
         let thrown = false;
         for (let cb of errorcbs) {
           cb(error);

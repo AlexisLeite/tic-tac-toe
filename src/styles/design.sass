@@ -389,15 +389,35 @@ input
       background: lime
 
   .chat-body
-    width: 100%
-    height: calc(100vh - 60px)
+    position: fixed
+    left: 0
+    top: 0
+    bottom: 60px
+    right: 250px
     overflow: auto
+
+  .chat-users
+    position: fixed
+    top: 0
+    bottom: 60px
+    right: 0px
+    width: 250px
+
+    button
+      display: block
+      width: 100%
+      border-radius: 0
+      
 
   .commands 
     *
-      height: 60px  
-      margin: 3px 2px
+      height: 55px  
+      margin: 0px 2px
 
+    padding: 3px
+    position: fixed
+    bottom: 0
+    width: 100vw
     display: flex
 
     input

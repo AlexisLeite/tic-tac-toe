@@ -1,86 +1,6 @@
 import React, { Component } from "react";
-import { ServerCommunications } from "services";
-import { api, EasyEvents } from "common";
 import { Modal } from "components/common";
-
-class FakeSocket {
-  options = {
-    _trulyOptions: {
-      keepAlive: 5,
-    },
-    get keepAlive() {
-      return this._trulyOptions.keepAlive;
-    },
-    set keepAlive(value) {
-      if (value < 1) value = 1;
-      this._trulyOptions.keepAlive = value;
-    },
-  };
-
-  messages = [];
-
-  constructor(endpoint, registerData, options) {
-    Object.assign(this.options, options);
-    this.endpoint = endpoint;
-    this.registerData = registerData;
-
-    EasyEvents.call(this);
-    this.addEvents(["message", "connect"]);
-  }
-
-  connect() {
-    ServerCommunications.post(this.endpoint, {
-      action: "register",
-      registerData: this.registerData,
-    }).then((res) => {
-      if (res.status === "ok") {
-        // Set the required keep alive time, it's specified by the server
-        this.options.keepAlive = res.keepAlive;
-
-        // If the connection was succesfully made, start the fake socket process
-        this.hash = res.hash;
-
-        // Shout out the received messages
-        this.fireConnect(res);
-        this.fireMessage(res.messages);
-
-        // Start the keep alive process
-        this.working = true;
-        this.fireKeepAlive();
-      } else throw Error(res);
-    });
-  }
-
-  disconnect() {
-    this.working = false;
-  }
-
-  fireKeepAlive() {
-    if (this.working)
-      this.keepAliveTimeout = setTimeout(
-        (() => {
-          ServerCommunications.post(this.endpoint, {
-            hash: this.hash,
-            action: "post",
-            messages: this.messages,
-          })
-            .then((res) => {
-              if (res.status === "ok") {
-                for (let message of res.messages) this.fireMessage(message);
-                this.fireKeepAlive();
-              } else throw Error(res);
-            })
-            .error((error) => console.warn(error));
-          this.messages = [];
-        }).bind(this),
-        this.options.keepAlive * 1000
-      );
-  }
-
-  send(message) {
-    this.messages.push(message);
-  }
-}
+import { FakeSocket } from "./../services/fakeSocket";
 
 class Chat extends Component {
   constructor(props) {
@@ -90,11 +10,13 @@ class Chat extends Component {
   state = {
     logged: false,
     messages: [],
+    clients: [],
   };
 
   textAreaRef = React.createRef();
   inputRef = React.createRef();
   loginRef = React.createRef();
+  chatDivRef = React.createRef();
 
   componentDidMount() {
     this.loginRef.current.focus();
@@ -105,32 +27,83 @@ class Chat extends Component {
   }
 
   login() {
-    this.fakeSocket = new FakeSocket(api("chat/"), {
+    /* this.fakeSocket = new FakeSocket(api("fakeSocket/"), { */
+    this.fakeSocket = new FakeSocket("http://192.168.1.4/fakeSocket", {
       user: this.loginRef.current.value,
     });
     this.fakeSocket.onConnect((res) => {
       this.setState({ logged: true });
     });
     this.fakeSocket.onMessage((message) => this.parseMessage(message));
+
+    this.fakeSocket.onClientConnect(this.parseConnect.bind(this));
+    this.fakeSocket.onClientDisconnect(this.parseDisconnect.bind(this));
+
     this.fakeSocket.connect();
   }
 
+  parseConnect(info) {
+    let clients = this.state.clients;
+    clients[info.hash] = info.registerData;
+    this.setState({ clients });
+  }
+
+  parseDisconnect(info) {
+    if (info.hash in this.state.clients) {
+      let clients = this.state.clients;
+      delete clients[info.hash];
+      this.setState({ clients });
+    }
+  }
+
   parseMessage(data) {
-    console.log(data);
-    if ("message" in data) {
-      this.setState({
-        messages: [
+    switch (data.kind) {
+      case "broadcast":
+        data = data.message;
+        let newMessagesObject = [
           ...this.state.messages,
-          { message: data.message, from: data.emitter.registerData.user },
-        ],
-      });
+          { message: data.message, from: data.emitter.user },
+        ];
+
+        // Keep the messages listed above 50
+        if (newMessagesObject.length > 50)
+          newMessagesObject.splice(0, newMessagesObject.length - 50);
+
+        this.setState({
+          messages: newMessagesObject,
+        });
+        break;
     }
   }
 
   sendMessage = () => {
     this.fakeSocket.send(this.inputRef.current.value);
     this.inputRef.current.value = "";
+    this.inputRef.current.focus();
   };
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    if (
+      prevState.messages.length < this.state.messages.length ||
+      prevState.messages[0] !== this.state.messages[0]
+    ) {
+      let messages = this.chatDivRef.current;
+
+      // Prior to getting your messagess.
+      let shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
+      let currentScroll = messages.scrollTop;
+
+      return { shouldScroll, currentScroll };
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (snapshot && snapshot.shouldScroll) {
+      let messages = this.chatDivRef.current;
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }
 
   componentWillUnmount() {
     this.fakeSocket.disconnect();
@@ -153,12 +126,19 @@ class Chat extends Component {
           </Modal>
         )}
         <div className="chat">
-          <div className="chat-body">
+          <div className="chat-body" ref={this.chatDivRef}>
             {this.state.messages.map((message, index) => (
               <div key={index} className="message">
                 <strong>{message.from}:</strong> {message.message}
               </div>
             ))}
+          </div>
+          <div className="chat-users">
+            {Object.keys(this.state.clients).map((key) => {
+              return (
+                <button onClick={() => console.log(key)}>{this.state.clients[key].user}</button>
+              );
+            })}
           </div>
           <form
             className="commands"
