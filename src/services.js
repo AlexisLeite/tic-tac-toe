@@ -17,8 +17,8 @@ export const ServicesLoader = new (function () {
   });
 
   // Register here the services you want to load on begining
-  Promise.all([loadTranslates(), UsersService.loadAvatars()]).then(() => {
+  /* Promise.all([loadTranslates(), UsersService.loadAvatars()]).then(() => {
     this.ready = true;
     this.fireReady();
-  });
+  }); */
 })();

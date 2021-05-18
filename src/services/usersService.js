@@ -37,7 +37,7 @@ export class LoginForm extends React.PureComponent {
       .then((res) => {
         PlayersService.player(this.slot).value = new HumanPlayer(res);
       })
-      .error((err) => {
+      .catch((err) => {
         if (err.error !== "WRONG_CREDENTIALS") throw err;
 
         this.setState({
@@ -125,7 +125,7 @@ export class UsersService {
       .then((res) => {
         avatars = res;
       })
-      .error((err) => console.error("Error trying to fetch avatar images", err));
+      .catch((err) => console.error("Error trying to fetch avatar images", err));
   }
   static getAvatars() {
     return avatars;

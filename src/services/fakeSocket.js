@@ -1,11 +1,12 @@
 import { ServerCommunications } from "services";
-import { api, EasyEvents } from "common";
+import { EasyEvents } from "common";
 
 export class FakeSocket {
   options = {
     _trulyOptions: {
       keepAlive: 5,
     },
+    debug: false,
     get keepAlive() {
       return this._trulyOptions.keepAlive;
     },
@@ -17,6 +18,7 @@ export class FakeSocket {
 
   messages = [];
   knownClients = {};
+  lockedHashes = [];
 
   constructor(endpoint, registerData, options) {
     Object.assign(this.options, options);
@@ -24,7 +26,14 @@ export class FakeSocket {
     this.registerData = registerData;
 
     EasyEvents.call(this);
-    this.addEvents(["message", "connect", "clientConnect", "clientDisconnect"]);
+    this.addEvents([
+      "clientConnect",
+      "clientDisconnect",
+      "connect",
+      "disconnect",
+      "error",
+      "message",
+    ]);
   }
 
   connect() {
@@ -33,7 +42,6 @@ export class FakeSocket {
       registerData: this.registerData,
     })
       .then((res) => {
-        res = res.json;
         if (res.status === "ok") {
           // If the connection was succesfully made, start the fake socket process
           this.hash = res.hash;
@@ -43,57 +51,75 @@ export class FakeSocket {
 
           // Start the keep alive process
           this.working = true;
-          this.fireKeepAlive();
-
           this.parseSuccessfulAnswer(res);
+
+          this.fireKeepAlive();
         } else throw Error(`Unexpected server answer: ${res}`);
 
         window.onbeforeunload = () => this.disconnect();
       })
-      .error((error) => {
-        console.error("Error on connecting");
-        console.log(error.text);
-      });
+      .catch(this.parseError);
   }
 
-  async disconnect() {
+  disconnect() {
     this.working = false;
-    await ServerCommunications.post(this.endpoint, {
+    ServerCommunications.post(this.endpoint, {
       hash: this.hash,
       action: "disconnect",
-    });
+    })
+      .then((res) => {
+        this.fireDisconnect(res);
+      })
+      .catch(this.parseError);
   }
 
   fireKeepAlive() {
-    if (this.working)
-      this.keepAliveTimeout = setTimeout(
-        (() => {
-          ServerCommunications.post(this.endpoint, {
-            hash: this.hash,
-            action: "post",
-            messages: this.messages,
-          })
-            .then(({ json: res }) => {
-              if (res.status === "ok") {
-                this.parseSuccessfulAnswer(res);
-                this.fireKeepAlive();
-              } else {
-                console.error("Unexpected server answer", res);
-              }
-            })
-            .error((error) => console.log(error.text));
-          this.messages = [];
-        }).bind(this),
-        this.options.keepAlive * 1000
-      );
+    this.keepAliveTimeout = setTimeout(() => {
+      if (!this.working) return;
+      ServerCommunications.post(this.endpoint, {
+        hash: this.hash,
+        action: "post",
+        messages: this.messages,
+      })
+        .then((res) => {
+          if (res.status === "ok") {
+            this.parseSuccessfulAnswer(res);
+            this.fireKeepAlive();
+          } else {
+            console.error("Unexpected server answer", res);
+            this.fireError(res.errorMessage);
+          }
+        })
+        .catch(this.parseError);
+      this.messages = [];
+    }, this.options.keepAlive * 1000);
   }
 
+  lock = (hash) => {
+    this.lockedHashes.push(hash);
+  };
+
+  unlock = (hash) => {
+    this.lockedHashes = this.lockedHashes.filter((current) => {
+      return current !== hash;
+    });
+  };
+
+  parseError = (error) => {
+    this.fireError(error);
+  };
+
   parseSuccessfulAnswer(res) {
+    if (this.options.debug) console.log(res);
     // Apply configurations
     if ("keepAlive" in res) this.options.keepAlive = res.keepAlive;
 
     // Notice of messages to the client's app
-    for (let message in res.messages) this.fireMessage(res.messages[message]);
+    for (let message in res.messages) {
+      if (!this.lockedHashes.includes(res.messages[message].from)) {
+        this.fireMessage(res.messages[message]);
+      }
+    }
 
     // Keep the client's list updated
     if ("clientsList" in res) {

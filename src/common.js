@@ -265,7 +265,7 @@ export function loadTranslates() {
     .then((res) => {
       translations = Object.keys(res);
     })
-    .error((e) => console.error("Error trying to fetch translations", e));
+    .catch((e) => console.error("Error trying to fetch translations", e));
 }
 
 export function translate(str) {
