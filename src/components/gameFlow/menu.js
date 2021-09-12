@@ -41,8 +41,10 @@ export default class Menu extends Component {
           {translate("Play")}
         </button>
 
-        <PlayerProfiler slot="main" />
-        <PlayerProfiler slot="secondary" />
+        <div id="profilers">
+          <PlayerProfiler slot="main" />
+          <PlayerProfiler slot="secondary" />
+        </div>
       </nav>
     );
   }

@@ -12,6 +12,7 @@ class GuestProfiler extends Component {
 
   constructor(props) {
     super(props);
+    console.log(this.props);
 
     this.state = {
       currentAvatar: -1,
@@ -29,10 +30,7 @@ class GuestProfiler extends Component {
       this.state.currentAvatar !== prevState.currentAvatar ||
       this.state.currentName !== prevState.currentName
     ) {
-      if (
-        this.state.currentAvatar !== -1 &&
-        this.state.currentName.length >= 4
-      ) {
+      if (this.state.currentAvatar !== -1 && this.state.currentName.length >= 4) {
         // If everything is right,
         this.props.onChange({
           name: this.state.currentName,
@@ -41,8 +39,7 @@ class GuestProfiler extends Component {
         });
       } else this.props.onChange(false);
 
-      let showWarning =
-        this.state.currentName.length > 0 && this.state.currentName.length < 4;
+      let showWarning = this.state.currentName.length > 0 && this.state.currentName.length < 4;
       if (showWarning && !this.state.warning)
         this.setState({
           warning: translate("4 characters at least"),
@@ -59,22 +56,16 @@ class GuestProfiler extends Component {
       <>
         <Selector
           options={this.props.avatars}
-          map={(avatar) => (
-            <img src={avatar} alt="Chosen avatar" className="profile-avatar" />
-          )}
+          map={(avatar) => <img src={avatar} alt="Chosen avatar" className="profile-avatar" />}
           onChange={(index, currentAvatar) => this.setState({ currentAvatar })}
         />
         <input
           type="text"
           placeholder={translate("Introduce your name")}
-          onChange={({ target: { value: currentName } }) =>
-            this.setState({ currentName })
-          }
+          onChange={({ target: { value: currentName } }) => this.setState({ currentName })}
           ref={this.inputRef}
         />
-        {this.state.warning && (
-          <div className="warning">{this.state.warning}</div>
-        )}
+        {this.state.warning && <div className="warning">{this.state.warning}</div>}
       </>
     );
   }

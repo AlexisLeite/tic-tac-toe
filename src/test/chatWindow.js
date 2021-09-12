@@ -5,10 +5,18 @@ import { RiSendPlane2Fill, RiArrowLeftCircleFill } from "react-icons/ri";
 class ChatWindow extends Component {
   chatDivRef = React.createRef();
 
+  state = {
+    sendDisabled: true,
+    debug: "",
+  };
+
+  componentDidMount() {}
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (snapshot && snapshot.shouldScroll) {
       let messages = this.chatDivRef.current;
-      messages.scrollTop = messages.scrollHeight;
+      let lastSpan = messages.querySelector(".chat-message:last-of-type span");
+      if (lastSpan) lastSpan.scrollIntoView(true);
     }
   }
 
@@ -20,7 +28,11 @@ class ChatWindow extends Component {
       let messages = this.chatDivRef.current;
 
       // Prior to getting your messagess.
-      let shouldScroll = messages.scrollTop + messages.clientHeight === messages.scrollHeight;
+      let shouldScroll =
+        Math.round(messages.scrollTop + messages.clientHeight) - 10 <
+          Math.round(messages.scrollHeight) &&
+        Math.round(messages.scrollTop + messages.clientHeight) + 10 >
+          Math.round(messages.scrollHeight);
       let currentScroll = messages.scrollTop;
 
       return { shouldScroll, currentScroll };
@@ -29,6 +41,16 @@ class ChatWindow extends Component {
   }
 
   render() {
+    let current = this.chatDivRef.current;
+    if (current)
+      this.debug =
+        false &&
+        `
+messages.scrollTop: ${current.scrollTop}
+messages.clientHeight: ${current.clientHeight}
+messages.scrollHeight: ${current.scrollHeight}
+    `;
+
     return (
       <>
         <div className="window-title">
@@ -45,17 +67,26 @@ class ChatWindow extends Component {
             </div>
           ))}
         </div>
+        {this.debug && <pre>{this.debug}</pre>}
         <form
           className="chat-commands"
           onSubmit={(ev) => {
             ev.preventDefault();
             this.props.onSend(this.props.refer.current.value);
             this.props.refer.current.value = "";
+            this.setState({ sendDisabled: true });
             this.props.refer.current.focus();
           }}
         >
-          <input disabled={!this.props.enabled} ref={this.props.refer} type="text" />
-          <button disabled={!this.props.enabled}>
+          <input
+            disabled={!this.props.enabled}
+            ref={this.props.refer}
+            type="text"
+            onChange={(ev) => {
+              this.setState({ sendDisabled: ev.target.value.length === 0 });
+            }}
+          />
+          <button disabled={!this.props.enabled || this.state.sendDisabled}>
             <RiSendPlane2Fill />
           </button>
         </form>
@@ -70,7 +101,7 @@ ChatWindow.propTypes = {
   onSend: PropTypes.func.isRequired,
   enabled: PropTypes.bool.isRequired,
   client: PropTypes.shape({
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
   }).isRequired,
 };
 

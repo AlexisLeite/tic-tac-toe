@@ -125,6 +125,7 @@ export class ComputerPlayer extends Player {
       return;
     }
 
+    console.log(api(`/tttMap/${ownPath}`));
     fetch(api(`/tttMap/${ownPath}`))
       .then((res) => res.json())
       .then((data) => {

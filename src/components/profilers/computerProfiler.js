@@ -40,7 +40,7 @@ class ComputerProfiler extends Component {
                   map={(op) => (
                     <div>
                       <img
-                        src={api(`images/computer/${op.difficulty}.png`)}
+                        src={api(`../images/computer/${op.difficulty}.png`)}
                         alt="Computer player avatar"
                       />
                       <h3>{translate(ucFirst(op.difficulty))}</h3>
@@ -53,7 +53,9 @@ class ComputerProfiler extends Component {
                   onClick={() => {
                     this.player.value = new ComputerPlayer({
                       name: `${ucFirst(this.state.selectedProfile.difficulty)}`,
-                      avatar: api(`images/computer/${this.state.selectedProfile.difficulty}.png`),
+                      avatar: api(
+                        `../images/computer/${this.state.selectedProfile.difficulty}.png`
+                      ),
                     });
                   }}
                 >

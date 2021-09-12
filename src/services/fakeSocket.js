@@ -37,25 +37,21 @@ export class FakeSocket {
   }
 
   connect() {
-    ServerCommunications.post(this.endpoint, {
+    this.fetch({
       action: "register",
       registerData: this.registerData,
     })
       .then((res) => {
-        if (res.status === "ok") {
-          // If the connection was succesfully made, start the fake socket process
-          this.hash = res.hash;
+        this.hash = res.hash;
 
-          // Shout out the received messages
-          this.fireConnect(res);
+        // Shout out the received messages
+        this.fireConnect(res);
 
-          // Start the keep alive process
-          this.working = true;
-          this.parseSuccessfulAnswer(res);
+        // Start the keep alive process
+        this.working = true;
+        this.parseSuccessfulAnswer(res);
 
-          this.fireKeepAlive();
-        } else throw Error(`Unexpected server answer: ${res}`);
-
+        this.fireKeepAlive();
         window.onbeforeunload = () => this.disconnect();
       })
       .catch(this.parseError);
@@ -63,34 +59,36 @@ export class FakeSocket {
 
   disconnect() {
     this.working = false;
-    ServerCommunications.post(this.endpoint, {
+    this.fetch({
       hash: this.hash,
       action: "disconnect",
-    })
-      .then((res) => {
-        this.fireDisconnect(res);
-      })
-      .catch(this.parseError);
+    }).then((res) => {
+      this.fireDisconnect(res);
+    });
+  }
+
+  fetch(options) {
+    return new Promise((resolve, reject) => {
+      ServerCommunications.post(this.endpoint, options)
+        .then((res) => {
+          if (res.status !== "error") resolve(res);
+          else this.parseError(res);
+        })
+        .catch(this.parseError);
+    });
   }
 
   fireKeepAlive() {
     this.keepAliveTimeout = setTimeout(() => {
       if (!this.working) return;
-      ServerCommunications.post(this.endpoint, {
+      this.fetch({
         hash: this.hash,
         action: "post",
         messages: this.messages,
-      })
-        .then((res) => {
-          if (res.status === "ok") {
-            this.parseSuccessfulAnswer(res);
-            this.fireKeepAlive();
-          } else {
-            console.error("Unexpected server answer", res);
-            this.fireError(res.errorMessage);
-          }
-        })
-        .catch(this.parseError);
+      }).then((res) => {
+        this.parseSuccessfulAnswer(res);
+        this.fireKeepAlive();
+      });
       this.messages = [];
     }, this.options.keepAlive * 1000);
   }
@@ -106,7 +104,13 @@ export class FakeSocket {
   };
 
   parseError = (error) => {
+    if (this.options.debug) {
+      console.error("Socket error");
+      console.trace();
+      console.log(error);
+    }
     this.fireError(error);
+    this.fireDisconnect();
   };
 
   parseSuccessfulAnswer(res) {

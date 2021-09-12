@@ -1,4 +1,4 @@
-import { className, MultiStage, translate } from "common";
+import { api, className, MultiStage, translate } from "common";
 import React, { Component } from "react";
 import { ComputerPlayer, HumanPlayer, PlayersService, ServicesLoader } from "services";
 import { Board, GameFlowService } from "services/gameFlowService";
@@ -45,13 +45,9 @@ class GameFlowInterface extends Component {
       this.setState({ turn: player.slot })
     );
 
-    PlayersService.player("main").value = new HumanPlayer({
-      name: "Alexis",
-      avatar: "http://localhost/images/avatar_09.png",
-    });
-    PlayersService.player("secondary").value = new ComputerPlayer({
-      name: "Hard",
-      avatar: "http://localhost/images/avatar_03.png",
+    PlayersService.player("main").value = new ComputerPlayer({
+      name: "Medium",
+      avatar: api("../images/computer/medium.png"),
     });
   }
 
@@ -103,6 +99,11 @@ class GameFlowInterface extends Component {
             () => (
               <div className="playingInterface">
                 <div className="current-players">
+                  <div className="options-bar">
+                    <button onClick={() => this.setState({ paused: true })}>
+                      {translate("Menu")}
+                    </button>
+                  </div>
                   <UserInfoCard
                     {...className(this.state.turn === "main", "playing")}
                     profile={PlayersService.player("main").profile}
@@ -113,11 +114,6 @@ class GameFlowInterface extends Component {
                   />
                 </div>
                 <Board />
-                <div className="options-bar">
-                  <button onClick={() => this.setState({ paused: true })}>
-                    {translate("Menu")}
-                  </button>
-                </div>
                 {this.state.paused && (
                   <Modal className="menu" canClose={false}>
                     <button onClick={() => this.setState({ paused: false })}>

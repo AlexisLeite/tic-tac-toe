@@ -32,10 +32,8 @@ class HumanProfiler extends Component {
       stage: 0,
       loadingLogin: false,
       selectedProfile: false,
-      avatars: UsersService.getAvatars(),
+      avatars: Object.values(UsersService.getAvatars()),
     };
-
-    this.avatarsFetchRequest = UsersService.getAvatars();
 
     this.slot = this.props.slot;
     this.player = PlayersService.player(this.slot);
@@ -60,12 +58,13 @@ class HumanProfiler extends Component {
     this.tryLoginSuscription = UsersService.login(profile, this.slot);
     this.tryLoginSuscription
       .then((res) => {
+        console.log(res);
         if (!("error" in res)) {
           this.player.value = new HumanPlayer(res);
           this.setState({ loadingLogin: false });
         }
       })
-      .error((e) => console.error(e));
+      .catch((e) => console.error(e));
     this.setState({ loadingLogin: true });
   };
 

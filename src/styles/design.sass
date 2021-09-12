@@ -219,7 +219,8 @@ input
 
   .options-bar
     width: 100%
-    text-align: right
+    position: fixed
+    top: 0
     
     button
       padding: 5px
@@ -367,8 +368,61 @@ input
   h3.user-info-card-name, h5.user-info-card-kind
     text-align: left 
     margin: 0 !important
+
+@media (orientation: landscape)
+  button
+    font-size: 1.5rem
     
+    &.button-round
+      border-radius: 40% !important
 
-@import './chat'
+  #gameMenu
+    #profilers
+      display: flex
+      justify-content: center
 
+  .playingInterface
+    flex-direction: row
+    align-items: center
+    justify-content: center
 
+    .current-players
+      width: 30vw
+      display: block
+      justify-content: space-between
+      height: 100vh
+      background: #fff1
+
+      .user-info-card      
+        img
+          margin: 10px
+          width: 12vw
+
+        &:last-of-type
+          flex-direction: row
+
+    .options-bar
+      position: relative
+      text-align: center
+      
+      button
+        width: 100%
+        margin: 0
+        padding: 1em 0
+        font-size: 2em
+        margin-bottom: 2em
+
+  .profiler
+    margin: 15px
+
+    .profiler-body
+      padding: 25px
+
+  .results
+    h5
+      font-size: 1.5em
+
+    .streak
+      .player-streak
+        img
+          width: 15vw

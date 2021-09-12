@@ -1,13 +1,13 @@
 import { HumanPlayer, PlayersSlots, PlayersService, ServerCommunications } from "services";
 import React from "react";
-import { translate } from "common";
+import { api, translate } from "common";
 import { PropTypes } from "prop-types";
 import { Loader } from "components/common";
 import urlPropType from "url-prop-type";
 
 const apis = {
-  avatars: "http://localhost/avatars",
-  login: "http://localhost/login",
+  avatars: api("avatars"),
+  login: api("login"),
 };
 
 export class LoginForm extends React.PureComponent {
@@ -118,7 +118,7 @@ LoginForm.propTypes = {
   slot: PropTypes.oneOf(["main", "secondary"]).isRequired,
 };
 
-var avatars = null;
+var avatars = {};
 export class UsersService {
   static loadAvatars() {
     return ServerCommunications.fetch(apis.avatars)
@@ -142,8 +142,11 @@ export class UsersService {
       throw new Error("You must provide an slot on your login try.");
 
     if (!("pass" in profile)) profile.asGuest = true;
-    return ServerCommunications.post(apis.login, profile).then((res) => {
+    let request = ServerCommunications.post(apis.login, profile);
+    request.then((res) => {
       if (!("error" in res)) window.localStorage.setItem(`${slot}.credentials`, res);
     });
+
+    return request;
   }
 }

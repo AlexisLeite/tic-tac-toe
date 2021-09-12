@@ -1,5 +1,27 @@
+import { Component } from "react";
+
 class ServerCommunications {
-  static fetch(uri, options) {
+  static __currentLoads = 0;
+  static callbacks = [];
+  static onLoad = (cb) => {
+    ServerCommunications.callbacks.push(cb);
+  };
+  static cancelLoad = (cb) => {
+    ServerCommunications.callbacks = ServerCommunications.callbacks.filter((_cb) => cb !== _cb);
+  };
+  static load() {
+    ServerCommunications.__currentLoads++;
+    ServerCommunications.callbacks.forEach((cb) => cb(true));
+  }
+  static unload() {
+    ServerCommunications.__currentLoads--;
+    if (ServerCommunications.__currentLoads === 0)
+      ServerCommunications.callbacks.forEach((cb) => cb(false));
+  }
+
+  static fetch(url, options) {
+    console.log(url);
+    ServerCommunications.load();
     var controller = new AbortController();
     let commonOptions = {
       method: "GET",
@@ -8,8 +30,8 @@ class ServerCommunications {
         "content-type": "application/json",
       },
     };
-    return new Promise((resolve, reject) => {
-      fetch(uri, { ...commonOptions, ...options, signal: controller.signal })
+    const promise = new Promise((resolve, reject) => {
+      fetch(url, { ...commonOptions, ...options, signal: controller.signal })
         .then((response) => {
           return new Promise((resolve) => {
             let text = null,
@@ -43,31 +65,83 @@ class ServerCommunications {
           });
         })
         .then((parsedResponse) => {
-          const { text, json } = parsedResponse;
+          ServerCommunications.unload();
+          const { json } = parsedResponse;
           if (
-            (typeof text === "object" && text !== null && "error" in text) ||
-            (typeof json === "object" && json !== null && "error" in json)
+            typeof json === "object" &&
+            json !== null &&
+            "message" in json &&
+            json.status === "error"
           ) {
-            console.log(parsedResponse.text);
-            reject(parsedResponse);
+            reject({
+              message: json.message,
+              status: json.status,
+            });
+          } else {
+            resolve(json);
           }
-
-          //console.log(`Server response fetched on uri ${uri}`, json);
-          resolve(json);
+        })
+        .catch((error) => {
+          ServerCommunications.unload();
+          reject({ status: "error", message: error.message });
         });
     });
+
+    promise.abort = controller.abort;
+    return promise;
   }
 
-  static get(uri, options = {}) {
+  static delete(url, data = {}, options = {}) {
+    options.method = "DELETE";
+    options.body = JSON.stringify(data);
+    return ServerCommunications.fetch(url, options);
+  }
+
+  static get(url, options = {}) {
     options.method = "GET";
-    return ServerCommunications.fetch(uri, options);
+    return ServerCommunications.fetch(url, options);
   }
 
-  static post(uri, data = {}, options = {}) {
+  static patch(url, data = {}, options = {}) {
+    options.method = "PATCH";
+    options.body = JSON.stringify(data);
+    return ServerCommunications.fetch(url, options);
+  }
+
+  static post(url, data = {}, options = {}) {
     options.method = "POST";
     options.body = JSON.stringify(data);
-    return ServerCommunications.fetch(uri, options);
+    return ServerCommunications.fetch(url, options);
   }
 }
 
-export { ServerCommunications };
+class ServerLoader extends Component {
+  state = { loading: true };
+
+  componentDidMount() {
+    ServerCommunications.onLoad(this.parseServerStatus);
+  }
+
+  componentWillUnmount() {
+    ServerCommunications.cancelLoad(this.parseServerStatus);
+  }
+
+  parseServerStatus = (loading) => {
+    this.setState({ loading });
+  };
+
+  render() {
+    if (this.state.loading)
+      return (
+        <div className="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      );
+    return "";
+  }
+}
+
+export { ServerCommunications, ServerLoader };

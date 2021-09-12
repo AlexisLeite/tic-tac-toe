@@ -456,7 +456,8 @@ input {
 }
 .playingInterface .options-bar {
   width: 100%;
-  text-align: right;
+  position: fixed;
+  top: 0;
 }
 .playingInterface .options-bar button {
   padding: 5px;
@@ -611,457 +612,61 @@ input {
 }
 
 @media (orientation: landscape) {
-  #Chat {
+  button {
+    font-size: 1.5rem;
+  }
+  button.button-round {
+    border-radius: 40% !important;
+  }
+
+  #gameMenu #profilers {
     display: flex;
-    font-size: 1.1rem;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  #Chat #ChatLogin {
-    text-align: center;
-  }
-  #Chat #ChatLogin .modal .modal-body {
-    min-height: 0;
-  }
-  #Chat #ChatLogin input {
-    border-radius: 0;
-    width: 300px;
-    color: firebrick;
-    color: white;
-    background: #1a5f58;
-    font-weight: bold;
-    border: 1px solid #777;
-  }
-  #Chat #ChatLogin input::placeholder {
-    color: #788;
-  }
-  #Chat #ChatLogin button {
-    width: 300px;
-    padding: 10px;
-    background: lavenderblush;
-    margin: 5px 0px;
-    border: 2px solid #4db6ac;
-    color: #1a5f58;
-    font-weight: bold;
-  }
-  #Chat #ChatLogin button:hover, #Chat #ChatLogin button:active, #Chat #ChatLogin button:focus {
-    text-shadow: 0 0 2px #ffe400;
-    color: #dcaf00;
-    background: #fffdbe;
-  }
-  #Chat #ChatLogin form {
-    display: flex;
-    padding: 20px;
-  }
-  #Chat #ChatLogin form div {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
+  }
+
+  .playingInterface {
+    flex-direction: row;
     align-items: center;
-  }
-  #Chat #ChatLogin form h1 {
-    margin-right: 20px;
-    color: #4db6ac;
-  }
-  #Chat #ChatLogin form .lds-ellipsis {
-    height: 20px;
-    padding: 10px;
-  }
-  #Chat #ChatLogin form .lds-ellipsis div {
-    width: 10px;
-    height: 10px;
-    top: 10px;
-    background: #4db6ac;
-    box-shadow: 0 0 5px #4db6ac;
-  }
-  #Chat #ClientsList {
-    flex-grow: 1;
-  }
-  #Chat #ClientsList #ClientInfoCard {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: black;
-    background: linear-gradient(10deg, black 0%, #394f4e 44%, #97cfce 100%);
-  }
-  #Chat #ClientsList #ClientInfoCard button {
-    margin: 10px 0 0 0;
-    padding: 10px 15px;
-    background: lavenderblush;
-    color: #4db6ac;
-    font-size: 1em;
-  }
-  #Chat #ClientsList #ClientInfoCard button:hover, #Chat #ClientsList #ClientInfoCard button:active, #Chat #ClientsList #ClientInfoCard button:focus {
-    background: #ffff00ff;
-  }
-  #Chat #ClientsList h3 {
-    margin: 0;
-    text-align: center;
-    padding: 6px;
-    background: #1a5f58;
-    color: #d0fff2;
-    border: 1px solid #333;
-    box-shadow: inset 1px 5px 20px 0px #333;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
-  #Chat #ClientsList .clients-list {
-    background: lavenderblush;
-    height: 100%;
-  }
-  #Chat #ClientsList .client {
-    border-bottom: 1px solid #bbb;
-  }
-  #Chat #ClientsList .client .client-details {
-    font-size: 1em;
-    text-align: left;
-    padding: 4px 0 4px 20px;
-    margin: 2px 1%;
-    color: #222;
-    display: inline-block;
-    align-items: center;
-    width: calc(100% - 40px);
-  }
-  #Chat #ClientsList .client .client-details:hover, #Chat #ClientsList .client .client-details:active, #Chat #ClientsList .client .client-details:focus {
-    background: #ffff00ff;
-  }
-  #Chat #ClientsList .client .client-details .unread {
-    background: red;
-    color: white;
-    border-radius: 50%;
-    padding: 0.4em 0.8em;
-    margin-right: 0.8em;
-    margin-top: 0;
-    font-size: 0.6em;
-    text-align: center;
-    font-weight: bold;
-    float: left;
-    margin-top: 0.7em;
-  }
-  #Chat #ClientsList .client .client-details strong {
-    display: block;
-  }
-  #Chat #ClientsList .client .client-details small {
-    width: 100%;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1em;
-    height: 1em;
-  }
-  #Chat #ClientsList .client .client-details div {
-    display: inline-block;
-  }
-  #Chat #ClientsList .client .options-menu {
-    float: right;
-    margin-top: 0.7em;
-  }
-  #Chat #ClientsList .client .menu-open {
-    background: #333;
-    color: #ccc;
-    border-radius: 50%;
-    padding: 0.4em 0.8em;
-    margin-right: 0.8em;
-    font-size: 0.6em;
-    display: block;
-    text-align: center;
-    font-weight: bold;
-    overflow: hidden;
-  }
-  #Chat #ClientsList .client .menu-open:hover, #Chat #ClientsList .client .menu-open:active, #Chat #ClientsList .client .menu-open:focus {
-    background: #555;
-  }
-  #Chat #ClientsList .client .float-menu {
-    position: absolute;
-    background: white;
-    border: 2px solid black;
-    margin-top: 5px;
-    margin-left: 30px;
-  }
-  #Chat #ClientsList .client .float-menu button {
-    display: block;
-    padding: 5px 10px;
-    width: 100%;
-  }
-  #Chat #ClientsList .client .float-menu button:hover, #Chat #ClientsList .client .float-menu button:active, #Chat #ClientsList .client .float-menu button:focus {
-    text-decoration: underline;
-    background: #ffe60794;
-    color: #463c00;
-  }
-  #Chat #ClientsList .client .ender {
-    clear: both;
-  }
-  #Chat #ChatWindow {
-    flex-grow: 3;
-    display: flex;
-    flex-direction: column;
-  }
-  #Chat #ChatWindow .window-title button {
-    display: none;
-  }
-  #Chat #ChatWindow .window-title h3 {
-    text-align: center;
-    background: #ccc;
-    margin: 10px;
-    padding: 10px;
-    color: #444;
-  }
-  #Chat #ChatWindow .chat-messages {
-    flex-grow: 1;
-    padding: 10px;
-    overflow: auto;
-  }
-  #Chat #ChatWindow .chat-commands {
-    display: flex;
-  }
-  #Chat #ChatWindow .chat-commands input {
-    flex-grow: 10;
-  }
-  #Chat #ChatWindow .chat-commands button {
-    color: #4db6ac;
-  }
-  #Chat #ChatWindow .chat-commands button:hover, #Chat #ChatWindow .chat-commands button:active, #Chat #ChatWindow .chat-commands button:focus {
-    color: #abe6e1;
-  }
-}
-@media (orientation: portrait) {
-  #Chat {
-    font-size: 1.1rem;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  #Chat #ChatLogin {
-    text-align: center;
-  }
-  #Chat #ChatLogin .modal .modal-body {
-    min-height: 0;
-  }
-  #Chat #ChatLogin input {
-    border-radius: 0;
-    width: 300px;
-    color: firebrick;
-    color: white;
-    background: #1a5f58;
-    font-weight: bold;
-    border: 1px solid #777;
-  }
-  #Chat #ChatLogin input::placeholder {
-    color: #788;
-  }
-  #Chat #ChatLogin button {
-    width: 300px;
-    padding: 10px;
-    background: lavenderblush;
-    margin: 5px 0px;
-    border: 2px solid #4db6ac;
-    color: #1a5f58;
-    font-weight: bold;
-  }
-  #Chat #ChatLogin button:hover, #Chat #ChatLogin button:active, #Chat #ChatLogin button:focus {
-    text-shadow: 0 0 2px #ffe400;
-    color: #dcaf00;
-    background: #fffdbe;
-  }
-  #Chat #ChatLogin form {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-  }
-  #Chat #ChatLogin form div {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
   }
-  #Chat #ChatLogin form h1 {
-    color: #4db6ac;
-  }
-  #Chat #ChatLogin form .lds-ellipsis {
-    height: 20px;
-    padding: 10px;
-  }
-  #Chat #ChatLogin form .lds-ellipsis div {
-    width: 10px;
-    height: 10px;
-    top: 10px;
-    background: #4db6ac;
-    box-shadow: 0 0 5px #4db6ac;
-  }
-  #Chat #ClientsList {
+  .playingInterface .current-players {
+    width: 30vw;
+    display: block;
+    justify-content: space-between;
     height: 100vh;
+    background: #fff1;
   }
-  #Chat #ClientsList #ClientInfoCard {
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: black;
-    background: linear-gradient(10deg, black 0%, #394f4e 44%, #97cfce 100%);
-  }
-  #Chat #ClientsList #ClientInfoCard button {
-    margin: 10px 0 0 0;
-    padding: 10px 15px;
-    background: lavenderblush;
-    color: #4db6ac;
-    font-size: 1em;
-  }
-  #Chat #ClientsList #ClientInfoCard button:hover, #Chat #ClientsList #ClientInfoCard button:active, #Chat #ClientsList #ClientInfoCard button:focus {
-    background: #ffff00ff;
-  }
-  #Chat #ClientsList h3 {
-    margin: 0;
-    text-align: center;
-    padding: 6px;
-    background: #1a5f58;
-    color: #d0fff2;
-    border: 1px solid #333;
-    box-shadow: inset 1px 5px 20px 0px #333;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
-  }
-  #Chat #ClientsList .clients-list {
-    background: lavenderblush;
-    height: 100%;
-  }
-  #Chat #ClientsList .client {
-    border-bottom: 1px solid #bbb;
-  }
-  #Chat #ClientsList .client .client-details {
-    font-size: 1em;
-    text-align: left;
-    padding: 4px 0 4px 20px;
-    margin: 2px 1%;
-    color: #222;
-    display: inline-block;
-    align-items: center;
-    width: calc(100% - 50px);
-  }
-  #Chat #ClientsList .client .client-details:hover, #Chat #ClientsList .client .client-details:active, #Chat #ClientsList .client .client-details:focus {
-    background: #ffff00ff;
-  }
-  #Chat #ClientsList .client .client-details .unread {
-    background: red;
-    color: white;
-    border-radius: 50%;
-    padding: 0.4em 0.8em;
-    margin-right: 0.8em;
-    margin-top: 0;
-    font-size: 0.6em;
-    text-align: center;
-    font-weight: bold;
-    float: left;
-    margin-top: 0.7em;
-  }
-  #Chat #ClientsList .client .client-details strong {
-    display: block;
-  }
-  #Chat #ClientsList .client .client-details small {
-    width: 100%;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1em;
-    height: 1em;
-  }
-  #Chat #ClientsList .client .client-details div {
-    display: inline-block;
-  }
-  #Chat #ClientsList .client .options-menu {
-    float: right;
-    margin-top: 0.7em;
-  }
-  #Chat #ClientsList .client .menu-open {
-    background: #333;
-    color: #ccc;
-    border-radius: 50%;
-    padding: 0.4em 0.8em;
-    margin-right: 0.8em;
-    font-size: 0.6em;
-    display: block;
-    text-align: center;
-    font-weight: bold;
-    overflow: hidden;
-  }
-  #Chat #ClientsList .client .menu-open:hover, #Chat #ClientsList .client .menu-open:active, #Chat #ClientsList .client .menu-open:focus {
-    background: #555;
-  }
-  #Chat #ClientsList .client .float-menu {
-    position: absolute;
-    background: white;
-    border: 2px solid black;
-    margin-top: 5px;
-    margin-left: 30px;
-  }
-  #Chat #ClientsList .client .float-menu button {
-    display: block;
-    padding: 5px 10px;
-    width: 100%;
-  }
-  #Chat #ClientsList .client .float-menu button:hover, #Chat #ClientsList .client .float-menu button:active, #Chat #ClientsList .client .float-menu button:focus {
-    text-decoration: underline;
-    background: #ffe60794;
-    color: #463c00;
-  }
-  #Chat #ClientsList .client .ender {
-    clear: both;
-  }
-  #Chat #ChatWindow {
-    display: none;
-    display: flex;
-    flex-direction: column;
-  }
-  #Chat #ChatWindow.open {
-    display: flex;
-    background: #333333f9;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  #Chat #ChatWindow .window-title {
-    display: flex;
-  }
-  #Chat #ChatWindow .window-title button {
-    color: lavenderblush;
-    margin: 0.3em 0.2em 0 0.2em;
-  }
-  #Chat #ChatWindow .window-title button:hover, #Chat #ChatWindow .window-title button:active, #Chat #ChatWindow .window-title button:focus {
-    color: #ffff00ff;
-  }
-  #Chat #ChatWindow .window-title h3 {
-    border-radius: 10px;
-    text-align: center;
-    background: #ccc;
+  .playingInterface .current-players .user-info-card img {
     margin: 10px;
-    padding: 10px;
-    color: #444;
-    flex-grow: 1;
-    margin-left: 0;
+    width: 12vw;
   }
-  #Chat #ChatWindow .chat-messages {
-    flex-grow: 1;
-    padding: 10px;
-    overflow: auto;
+  .playingInterface .current-players .user-info-card:last-of-type {
+    flex-direction: row;
   }
-  #Chat #ChatWindow .chat-commands {
-    display: flex;
+  .playingInterface .options-bar {
+    position: relative;
+    text-align: center;
   }
-  #Chat #ChatWindow .chat-commands input {
-    flex-grow: 10;
+  .playingInterface .options-bar button {
+    width: 100%;
+    margin: 0;
+    padding: 1em 0;
+    font-size: 2em;
+    margin-bottom: 2em;
   }
-  #Chat #ChatWindow .chat-commands button {
-    color: #4db6ac;
+
+  .profiler {
+    margin: 15px;
   }
-  #Chat #ChatWindow .chat-commands button:hover, #Chat #ChatWindow .chat-commands button:active, #Chat #ChatWindow .chat-commands button:focus {
-    color: #abe6e1;
+  .profiler .profiler-body {
+    padding: 25px;
+  }
+
+  .results h5 {
+    font-size: 1.5em;
+  }
+  .results .streak .player-streak img {
+    width: 15vw;
   }
 }
 .lds-ellipsis {

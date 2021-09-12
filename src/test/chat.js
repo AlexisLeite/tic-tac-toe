@@ -6,7 +6,7 @@ import ChatWindow from "./chatWindow";
 import { Loader } from "./../components/common/loader";
 import { api } from "common";
 
-function makeClientMessagesArray(hash, chat, values = []) {
+function makeClientMessagesArray(hash, chat, unread = 0, values = []) {
   let returnObject = [...values];
 
   Object.defineProperties(returnObject, {
@@ -33,7 +33,7 @@ function makeClientMessagesArray(hash, chat, values = []) {
       },
     },
     unread: {
-      value: 0,
+      value: unread,
       writable: true,
     },
   });
@@ -48,6 +48,7 @@ class Chat extends Component {
     clients: [],
     current: null,
     windowOpen: false,
+    buttonSendDisabled: true,
   };
 
   inputRef = React.createRef();
@@ -62,7 +63,7 @@ class Chat extends Component {
   }
 
   componentWillUnmount() {
-    //this.fakeSocket.disconnect();
+    this.fakeSocket.disconnect();
   }
 
   deleteClient(hash) {
@@ -118,9 +119,15 @@ class Chat extends Component {
 
   login() {
     // Make the connection
-    this.socket = new FakeSocket(api("chat"), {
-      name: this.inputRef.current.value,
-    });
+    this.socket = new FakeSocket(
+      api("chat"),
+      {
+        name: this.inputRef.current.value,
+      },
+      {
+        debug: true,
+      }
+    );
     this.socket.connect();
 
     // Parse connection result
@@ -135,11 +142,12 @@ class Chat extends Component {
         loadingLogin: false,
         logged: true,
         current: "general",
+        error: false,
       });
     });
 
     // Parse disconnection
-    this.socket.onDisconnect((res) => {
+    this.socket.onDisconnect(() => {
       this.setState({
         logged: false,
         messages: [],
@@ -149,8 +157,23 @@ class Chat extends Component {
     });
 
     this.socket.onError((error) => {
-      console.error("Error reported on socket");
       console.log(error);
+      let errorMessage =
+        typeof error === "string"
+          ? error
+          : "errorMessage" in error
+          ? typeof error.errorMessage === "string"
+            ? error.errorMessage
+            : "message" in error.errorMessage
+            ? error.errorMessage.message
+            : "reason" in error.errorMessage
+            ? error.errorMessage.reason
+            : error.errorMessage.toString()
+          : error.toString();
+
+      this.setState({
+        error: errorMessage,
+      });
     });
 
     // Parse received messages
@@ -212,9 +235,22 @@ class Chat extends Component {
           body: "The client has been disconnected",
         });
         newClients[info.hash].connected = false;
-      } else delete newClients[info.hash];
+      } else {
+        delete newClients[info.hash];
+      }
+
+      let current, windowOpen;
+      if (this.state.current === info.hash) {
+        windowOpen = false;
+        current = "general";
+      } else {
+        windowOpen = this.state.windowOpen;
+        current = this.state.current;
+      }
       this.setState({
         clients: newClients,
+        current,
+        windowOpen,
       });
     }
   };
@@ -242,8 +278,12 @@ class Chat extends Component {
         break;
     }
 
-    console.log(this.state.messages[receipt], this.state.messages, receipt);
-    let receiptMessages = makeClientMessagesArray(receipt, this, [...this.state.messages[receipt]]);
+    let receiptMessages = makeClientMessagesArray(
+      receipt,
+      this,
+      this.state.messages[receipt].unread,
+      [...this.state.messages[receipt]]
+    );
     receiptMessages.push(message);
     let messages = { ...this.state.messages, [receipt]: receiptMessages };
     this.setState({ messages });
@@ -269,13 +309,23 @@ class Chat extends Component {
               onSubmit={(ev) => {
                 ev.preventDefault();
                 this.login();
-                this.setState({ loadingLogin: true });
+                this.setState({ loadingLogin: true, buttonSendDisabled: true });
               }}
             >
               <h1>Welcome</h1>
               <div>
-                <input type="text" placeholder="Name" ref={this.inputRef} />
-                <button>Login</button>
+                {this.state.error && <div className="error">{this.state.error}</div>}
+                <input
+                  type="text"
+                  placeholder="Name"
+                  ref={this.inputRef}
+                  onChange={(ev) => {
+                    this.setState({
+                      buttonSendDisabled: ev.target.value.length < 4,
+                    });
+                  }}
+                />
+                <button disabled={this.state.buttonSendDisabled}>Login</button>
                 {this.state.loadingLogin && <Loader />}
               </div>
             </form>
@@ -305,20 +355,22 @@ class Chat extends Component {
                 }}
               />
             </div>
-            <div id="ChatWindow" className={this.state.windowOpen === true ? "open" : ""}>
-              <ChatWindow
-                client={this.state.clients[this.state.current]}
-                messages={this.state.messages[this.state.current]}
-                onClose={() => this.setState({ windowOpen: false })}
-                onSend={(message) => this.sendMessage(message, this.state.current)}
-                refer={this.inputRef}
-                enabled={
-                  this.state.clients[this.state.current] &&
-                  this.state.clients[this.state.current].connected &&
-                  !this.state.clients[this.state.current].locked
-                }
-              />
-            </div>
+            {this.state.current && (
+              <div id="ChatWindow" className={this.state.windowOpen === true ? "open" : ""}>
+                <ChatWindow
+                  client={this.state.clients[this.state.current]}
+                  messages={this.state.messages[this.state.current]}
+                  onClose={() => this.setState({ windowOpen: false, current: null })}
+                  onSend={(message) => this.sendMessage(message, this.state.current)}
+                  refer={this.inputRef}
+                  enabled={
+                    this.state.clients[this.state.current] &&
+                    this.state.clients[this.state.current].connected &&
+                    !this.state.clients[this.state.current].locked
+                  }
+                />
+              </div>
+            )}
           </>
         )}
       </div>
